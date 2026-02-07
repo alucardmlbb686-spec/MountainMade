@@ -129,19 +129,19 @@ export default function FeaturedCategories() {
           </p>
         </div>
 
-        {/* Bento Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Responsive Grid: 3 columns on mobile, 4 on desktop */}
+        <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
           {categories.map((category, index) => (
             <Link
               key={category.slug}
               href={`/categories?category=${category.slug}`}
-              className={`group relative overflow-hidden rounded-2xl bg-card border border-border hover-lift shadow-lg ${
+              className={`group relative overflow-hidden rounded-xl md:rounded-2xl bg-card border border-border hover-lift shadow-lg ${
                 isHydrated ? 'animate-fade-in-up' : 'opacity-0'
               }`}
               style={{ animationDelay: `${0.2 + index * 0.1}s` }}
             >
               {/* Image */}
-              <div className="aspect-square overflow-hidden">
+              <div className="aspect-[1/1] w-full h-auto max-h-28 md:max-h-none overflow-hidden">
                 <AppImage
                   src={category.image}
                   alt={`${category.name} category`}
@@ -150,15 +150,15 @@ export default function FeaturedCategories() {
               </div>
 
               {/* Overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent flex flex-col justify-end p-6">
-                <h3 className="text-2xl font-bold text-white mb-2 font-serif tracking-tight">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent flex flex-col justify-end p-3 md:p-6">
+                <h3 className="text-xs md:text-2xl font-bold text-white mb-1 md:mb-2 font-serif tracking-tight line-clamp-1 md:line-clamp-none">
                   {category.name}
                 </h3>
-                <div className="flex items-center justify-between text-white/90 text-sm font-medium">
+                <div className="flex items-center justify-between text-white/90 text-[10px] md:text-sm font-medium">
                   <span>{category.productCount} Products</span>
                   <Icon
                     name="ArrowRightIcon"
-                    size={20}
+                    size={16}
                     className="group-hover:translate-x-2 transition-transform duration-300"
                   />
                 </div>
@@ -168,7 +168,7 @@ export default function FeaturedCategories() {
         </div>
 
         {/* CTA */}
-        <div className="text-center mt-14">
+        <div className="text-center mt-10 md:mt-14">
           <Link href="/categories" className="btn btn-secondary px-8 py-3.5 text-base">
             View All Categories
             <Icon name="ArrowRightIcon" size={20} />
