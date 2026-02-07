@@ -80,12 +80,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           } else {
             errorMsg = String(error);
           }
-          if (errorMsg.includes('AbortError')) {
-            setAuthReady(true);
-            setLoading(false);
-            return;
+          if (!errorMsg.includes('AbortError')) {
+            console.error('Auth initialization failed:', error);
           }
-          console.error('Auth initialization failed:', error);
           setAuthReady(true); // Set to true anyway to prevent UI blocks
         }
       } finally {
