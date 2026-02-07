@@ -15,6 +15,7 @@ export default function CategoriesPage() {
     organicOnly: false,
     sortBy: 'popularity',
   });
+  const [searchTerm, setSearchTerm] = useState('');
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   return (
@@ -30,6 +31,29 @@ export default function CategoriesPage() {
             <p className="text-sm sm:text-base text-muted-foreground">
               Curated selections of pure, organic foods from mountain regions
             </p>
+          </div>
+
+          {/* Search Bar */}
+          <div className="mb-6">
+            <div className="relative">
+              <Icon name="MagnifyingGlassIcon" size={20} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
+              <input
+                type="text"
+                placeholder="Search products by name, category, or origin..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="input-base w-full pl-10 focus:ring-2 focus:ring-primary"
+              />
+              {searchTerm && (
+                <button
+                  onClick={() => setSearchTerm('')}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground"
+                  aria-label="Clear search"
+                >
+                  <Icon name="XMarkIcon" size={20} />
+                </button>
+              )}
+            </div>
           </div>
 
           {/* Mobile Filter Button */}
@@ -49,7 +73,7 @@ export default function CategoriesPage() {
               onMobileClose={() => setIsMobileFilterOpen(false)}
             />
             <div className="lg:col-span-3">
-              <ProductGrid filters={filters} />
+              <ProductGrid filters={filters} searchTerm={searchTerm} />
             </div>
           </div>
         </div>

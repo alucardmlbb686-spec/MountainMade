@@ -21,9 +21,10 @@ interface Product {
 
 interface ProductGridProps {
   filters: any;
+  searchTerm: string;
 }
 
-export default function ProductGrid({ filters }: ProductGridProps) {
+export default function ProductGrid({ filters, searchTerm }: ProductGridProps) {
   const [isHydrated, setIsHydrated] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -55,6 +56,19 @@ export default function ProductGrid({ filters }: ProductGridProps) {
 
   // Filter products
   const filteredProducts = products.filter((product) => {
+    // Search filter
+    if (searchTerm.trim()) {
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch = 
+        product.name.toLowerCase().includes(searchLower) ||
+        product.category.toLowerCase().includes(searchLower) ||
+        (product.description && product.description.toLowerCase().includes(searchLower));
+      
+      if (!matchesSearch) {
+        return false;
+      }
+    }
+
     // Category filter
     if (filters.categories.length > 0 && !filters.categories.includes(product.category)) {
       return false;
@@ -116,7 +130,12 @@ export default function ProductGrid({ filters }: ProductGridProps) {
       <div className="text-center py-20">
         <Icon name="ShoppingBagIcon" size={64} className="text-muted-foreground mx-auto mb-4" />
         <h3 className="text-xl font-semibold text-foreground mb-2">No products found</h3>
-        <p className="text-muted-foreground">Try adjusting your filters</p>
+        <p className="text-muted-foreground">
+          {searchTerm 
+            ? `No products match "${searchTerm}". Try a different search term or adjust filters.`
+            : 'Try adjusting your filters'
+          }
+        </p>
       </div>
     );
   }
@@ -124,10 +143,13 @@ export default function ProductGrid({ filters }: ProductGridProps) {
   return (
     <div>
       {/* Results Count */}
-      <div className="flex items-center justify-between mb-6">
-        <p className="text-muted-foreground">
-          Showing <span className="font-semibold text-foreground">{sortedProducts.length}</span> products
-        </p>
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
+        <div>
+          <p className="text-muted-foreground">
+            Showing <span className="font-semibold text-foreground">{sortedProducts.length}</span> products
+            {searchTerm && <span className="text-foreground font-semibold"> for "{searchTerm}"</span>}
+          </p>
+        </div>
       </div>
 
       {/* Product Grid */}
