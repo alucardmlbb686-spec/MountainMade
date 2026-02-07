@@ -217,15 +217,15 @@ export default function FeaturedProducts() {
         </div>
       </div>
 
-      {/* Mobile Layout - Amazon Style */}
+      {/* Mobile Layout - 3 Column Grid */}
       <div className="md:hidden">
         {/* Category Filter - Horizontal Scroll */}
         {categories.length > 0 && (
-          <div className="px-4 pb-3 overflow-x-auto">
+          <div className="px-3 pb-3 overflow-x-auto">
             <div className="flex gap-2">
               <button
                 onClick={() => setSelectedCategory(null)}
-                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
                   selectedCategory === null
                     ? 'bg-orange-500 text-white'
                     : 'bg-white border border-gray-300 text-gray-700'
@@ -237,7 +237,7 @@ export default function FeaturedProducts() {
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all ${
+                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
                     selectedCategory === category
                       ? 'bg-orange-500 text-white'
                       : 'bg-white border border-gray-300 text-gray-700'
@@ -250,67 +250,65 @@ export default function FeaturedProducts() {
           </div>
         )}
 
-        {/* Products - Mobile Stack */}
-        <div className="px-4 space-y-3">
+        {/* Products - 3 Column Grid */}
+        <div className="px-3">
           {filteredProducts.length > 0 ? (
-            filteredProducts.map((product, index) => (
-              <Link
-                key={product.id}
-                href={`/product-details?id=${product.id}`}
-                className={`group flex gap-3 bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all ${
-                  isHydrated ? 'animate-fade-in-up' : 'opacity-0'
-                }`}
-                style={{ animationDelay: `${0.1 + index * 0.03}s` }}
-              >
-                {/* Product Image */}
-                <div className="w-24 h-24 flex-shrink-0 bg-slate-100 overflow-hidden">
-                  <AppImage
-                    src={product.image_url || '/assets/images/no_image.png'}
-                    alt={product.name}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                  />
-                </div>
+            <div className="grid grid-cols-3 gap-2">
+              {filteredProducts.map((product, index) => (
+                <Link
+                  key={product.id}
+                  href={`/product-details?id=${product.id}`}
+                  className={`group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all flex flex-col ${
+                    isHydrated ? 'animate-fade-in-up' : 'opacity-0'
+                  }`}
+                  style={{ animationDelay: `${0.1 + index * 0.03}s` }}
+                >
+                  {/* Product Image */}
+                  <div className="w-full aspect-square bg-slate-100 overflow-hidden">
+                    <AppImage
+                      src={product.image_url || '/assets/images/no_image.png'}
+                      alt={product.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
 
-                {/* Product Info */}
-                <div className="flex-1 p-3 flex flex-col justify-between">
-                  <div>
-                    <span className="text-xs font-medium text-orange-600 uppercase tracking-wide">
+                  {/* Product Info */}
+                  <div className="p-2 flex flex-col flex-1">
+                    <span className="text-xs font-medium text-orange-600 uppercase tracking-wide line-clamp-1">
                       {product.category}
                     </span>
-                    <h3 className="text-sm font-semibold text-gray-900 line-clamp-2 mt-1">
+                    <h3 className="text-xs font-semibold text-gray-900 line-clamp-2 mt-1 flex-1">
                       {product.name}
                     </h3>
-                  </div>
-                  <div className="flex items-end justify-between mt-2">
-                    <div>
-                      <span className="text-lg font-bold text-gray-900">₹{product.price}</span>
-                      {product.stock <= 5 && (
-                        <p className="text-xs text-red-600 font-medium">Only {product.stock} left</p>
-                      )}
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-sm font-bold text-gray-900">₹{product.price}</span>
+                      <div className="w-6 h-6 rounded-full bg-orange-100 flex items-center justify-center">
+                        <Icon
+                          name="ArrowRightIcon"
+                          size={14}
+                          className="text-orange-600"
+                        />
+                      </div>
                     </div>
-                    <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center">
-                      <Icon
-                        name="ArrowRightIcon"
-                        size={16}
-                        className="text-orange-600"
-                      />
-                    </div>
+                    {product.stock <= 5 && (
+                      <p className="text-xs text-red-600 font-medium mt-1">Only {product.stock}</p>
+                    )}
                   </div>
-                </div>
-              </Link>
-            ))
+                </Link>
+              ))}
+            </div>
           ) : (
             <div className="text-center py-12">
               <Icon name="MagnifyingGlassIcon" size={48} className="text-gray-300 mx-auto mb-3" />
-              <p className="text-gray-500 font-medium">No products found</p>
+              <p className="text-gray-500 font-medium text-sm">No products found</p>
             </div>
           )}
         </div>
 
         {/* Mobile View All CTA */}
         {filteredProducts.length > 0 && (
-          <div className="px-4 pt-4 pb-6">
-            <Link href="/categories" className="w-full block text-center bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold transition-colors">
+          <div className="px-3 pt-3 pb-4">
+            <Link href="/categories" className="w-full block text-center bg-orange-500 hover:bg-orange-600 text-white py-2.5 rounded-lg font-semibold transition-colors text-sm">
               View All Products
             </Link>
           </div>
