@@ -20,14 +20,14 @@ export default function CategoriesPage() {
   return (
     <>
       <Header />
-      <main className="pt-24 pb-16 bg-background min-h-screen">
-        <div className="container mx-auto">
+      <main className="pt-16 sm:pt-20 md:pt-24 pb-16 bg-background min-h-screen">
+        <div className="container mx-auto px-3 md:px-4">
           {/* Page Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground font-serif mb-3">
+          <div className="mb-6 md:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground font-serif mb-2 md:mb-3">
               Explore Our Collection
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground">
               Curated selections of pure, organic foods from mountain regions
             </p>
           </div>

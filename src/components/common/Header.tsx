@@ -35,7 +35,7 @@ export default function Header() {
   return (
     <header
       className={`fixed top-0 left-0 w-full z-50 ${
-        isScrolled ? 'glass-card shadow-lg py-2 md:py-3' : 'bg-transparent py-2 md:py-4'
+        isScrolled ? 'glass-card shadow-lg py-1.5 md:py-2.5' : 'bg-transparent py-1.5 md:py-3'
       }`}
     >
       {/* Top Banner - Hidden on mobile */}
@@ -48,18 +48,18 @@ export default function Header() {
         </div>
       )}
 
-      <div className="container mx-auto px-3 md:px-4">
-        <div className="flex items-center justify-between gap-2 md:gap-4">
+      <div className="container mx-auto px-2 md:px-3 lg:px-4">
+        <div className="flex items-center justify-between gap-1 md:gap-2 lg:gap-4">
           {/* Logo */}
-          <Link href="/homepage" className="flex items-center gap-2 md:gap-3 flex-shrink-0">
+          <Link href="/homepage" className="flex items-center gap-1 md:gap-2 lg:gap-3 flex-shrink-0">
             <AppImage
               src="/assets/images/WhatsApp_Image_2026-02-04_at_1.00.46_PM-1770372538730.jpeg"
               alt="MountainMade Logo"
-              className="w-8 h-8 md:w-12 md:h-12 object-contain"
+              className="w-7 h-7 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain"
             />
-            <div className="hidden sm:block">
-              <span className="text-lg md:text-2xl font-bold text-foreground font-serif block leading-none tracking-tight">MountainMade</span>
-              <span className="hidden md:block text-xs text-muted-foreground font-medium">100% Organic Certified</span>
+            <div className="hidden md:block">
+              <span className="text-sm md:text-lg lg:text-2xl font-bold text-foreground font-serif block leading-tight">MountainMade</span>
+              <span className="hidden lg:block text-xs text-muted-foreground font-medium">Organic</span>
             </div>
           </Link>
 
