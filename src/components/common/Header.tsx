@@ -51,16 +51,12 @@ export default function Header() {
       <div className="container mx-auto px-2 md:px-3 lg:px-4">
         <div className="flex items-center justify-between gap-1 md:gap-2 lg:gap-4">
           {/* Logo */}
-          <Link href="/homepage" className="flex items-center gap-1 md:gap-2 lg:gap-3 flex-shrink-0">
+          <Link href="/homepage" className="flex items-center flex-shrink-0">
             <AppImage
               src="/assets/images/WhatsApp_Image_2026-02-04_at_1.00.46_PM-1770372538730.jpeg"
               alt="MountainMade Logo"
-              className="w-7 h-7 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain"
+              className="w-8 h-8 md:w-10 md:h-10 lg:w-12 lg:h-12 object-contain"
             />
-            <div className="hidden md:block">
-              <span className="text-sm md:text-lg lg:text-2xl font-bold text-foreground font-serif block leading-tight">MountainMade</span>
-              <span className="hidden lg:block text-xs text-muted-foreground font-medium">Organic</span>
-            </div>
           </Link>
 
           {/* Desktop Navigation */}

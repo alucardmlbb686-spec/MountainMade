@@ -58,9 +58,9 @@
 }
 
 @layer components {
-  /* Smooth Scroll */
+  /* Smooth Scroll - Disabled for performance */
   html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
@@ -80,13 +80,10 @@
     }
   }
   
-  /* Glassmorphic Card - Enhanced */
+  /* Glassmorphic Card - Optimized for performance */
   .glass-card {
-    background: rgba(255, 255, 255, 0.85);
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 32px rgba(15, 23, 42, 0.08), 0 1px 3px rgba(15, 23, 42, 0.06);
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(200, 200, 200, 0.2);
   }
   
   /* Organic Border Radius */
@@ -94,32 +91,30 @@
     border-radius: 16px;
   }
   
-  /* Premium Shadow System */
+  /* Premium Shadow System - Disabled for performance */
   .premium-shadow {
-    box-shadow: 0 4px 24px rgba(15, 23, 42, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
+    /* Removed for low-end device performance */
   }
   
   .premium-shadow-lg {
-    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.12), 0 8px 24px rgba(15, 23, 42, 0.08);
+    /* Removed for low-end device performance */
   }
   
-  /* Hover Lift - Enhanced */
+  /* Hover Lift - Disabled for performance */
   .hover-lift {
-    transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* No transitions for low-end device compatibility */
   }
   .hover-lift:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 60px rgba(15, 23, 42, 0.15), 0 8px 24px rgba(15, 23, 42, 0.1);
+    /* No hover effects for performance */
   }
   
-  /* Button Base - Enhanced */
+  /* Button Base - Optimized for performance */
   .btn {
     padding: 0.875rem 2rem;
     border-radius: 12px;
     font-weight: 600;
     font-size: 0.9375rem;
     letter-spacing: -0.01em;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     display: inline-flex;
     align-items: center;
@@ -136,25 +131,22 @@
     width: 100%;
     height: 100%;
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.2) 0%, rgba(255, 255, 255, 0) 100%);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    display: none;
   }
   
   .btn:hover::before {
-    opacity: 1;
+    display: none;
   }
   
   .btn-primary {
-    background: linear-gradient(135deg, #15803D 0%, #166534 100%);
+    background: #15803D;
     color: var(--color-primary-foreground);
-    box-shadow: 0 4px 16px rgba(21, 128, 61, 0.3), 0 2px 8px rgba(21, 128, 61, 0.2);
   }
   .btn-primary:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(21, 128, 61, 0.4), 0 4px 12px rgba(21, 128, 61, 0.3);
+    opacity: 0.9;
   }
   .btn-primary:active {
-    transform: translateY(0);
+    opacity: 0.8;
   }
   
   .btn-secondary {
@@ -165,10 +157,10 @@
   .btn-secondary:hover {
     background-color: var(--color-primary);
     color: var(--color-primary-foreground);
-    box-shadow: 0 4px 16px rgba(21, 128, 61, 0.2);
+    opacity: 0.9;
   }
   
-  /* Input Base - Enhanced */
+  /* Input Base - Optimized for performance */
   .input-base {
     width: 100%;
     padding: 0.875rem 1.125rem;
@@ -177,13 +169,11 @@
     background-color: var(--color-input);
     color: var(--color-foreground);
     font-size: 0.9375rem;
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
   .input-base:focus {
     outline: none;
     border-color: var(--color-primary);
     background-color: #FFFFFF;
-    box-shadow: 0 0 0 4px rgba(21, 128, 61, 0.08), 0 2px 8px rgba(15, 23, 42, 0.04);
   }
   
   /* Badge - Enhanced */
@@ -282,15 +272,7 @@
   
   /* Skeleton Loader */
   .skeleton {
-    background: linear-gradient(
-      90deg,
-      #f1f5f9 0%,
-      #e2e8f0 20%,
-      #f1f5f9 40%,
-      #f1f5f9 100%
-    );
-    background-size: 2000px 100%;
-    animation: shimmer 1.5s infinite linear;
+    background: #e2e8f0;
     border-radius: 8px;
   }
   
@@ -302,46 +284,78 @@
     background-clip: text;
   }
   
-  /* Backdrop Blur Utilities */
+  /* Backdrop Blur Utilities - Disabled for performance */
   .backdrop-blur-premium {
-    backdrop-filter: blur(20px) saturate(180%);
-    -webkit-backdrop-filter: blur(20px) saturate(180%);
+    /* Removed for low-end device performance */
   }
 
-  /* Respect user's motion preferences */
+  /* Respect user's motion preferences - Already disabled globally */
   @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
     *::after {
-      animation-duration: 0.01ms !important;
-      animation-iteration-count: 1 !important;
-      transition-duration: 0.01ms !important;
+      animation: none !important;
+      transition: none !important;
     }
   }
 
-  /* Disable animations on small screens (mobile low-end devices) */
+  /* Disable ALL animations on mobile devices */
   @media (max-width: 640px) {
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
+    }
+
     .animate-spin,
     .animate-bounce,
-    .animate-pulse {
+    .animate-pulse,
+    .animate-fade-in-up,
+    .animate-fade-in-slide,
+    .animate-scale-in,
+    .animate-float {
       animation: none !important;
     }
 
     [class*='transition-'],
-    [class*='duration-'] {
+    [class*='duration-'],
+    [class*='hover:'],
+    [class*='group-hover:'] {
       transition: none !important;
     }
 
-    .group:hover > [class*='group-hover:'],
-    [class*='hover:'] {
+    .hover-lift,
+    .hover-lift:hover {
+      transform: none !important;
       transition: none !important;
     }
   }
 
-  /* For very low-end mobile devices, reduce transition duration */
+  /* Disable animations on very low-end devices */
   @media (max-width: 480px) {
-    [class*='transition-'] {
-      transition-duration: 150ms !important;
+    *,
+    *::before,
+    *::after {
+      animation: none !important;
+      transition: none !important;
     }
+  }
+
+  /* Global optimization: disable heavy animations on desktop too for better performance */
+  .animate-float {
+    animation: none !important;
+  }
+
+  [class*='shadow-lg'],
+  [class*='shadow-md'],
+  [class*='shadow-xl'] {
+    box-shadow: none !important;
+  }
+
+  .premium-shadow,
+  .premium-shadow-lg,
+  .glass-card {
+    box-shadow: none !important;
   }
 }
