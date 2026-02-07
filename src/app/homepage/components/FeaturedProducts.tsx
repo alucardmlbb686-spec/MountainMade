@@ -110,33 +110,6 @@ export default function FeaturedProducts() {
 
   return (
     <section className="bg-gray-50 md:bg-white md:py-24 py-8">
-      {/* Mobile Search Bar (Amazon Style) */}
-      <div className="md:hidden sticky top-0 bg-gradient-to-r from-orange-400 to-orange-500 px-4 py-3 z-20 shadow-md">
-        <div className="flex items-center gap-2">
-          <div className="flex-1 relative">
-            <Icon
-              name="MagnifyingGlassIcon"
-              size={18}
-              className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-            />
-            <input
-              type="text"
-              placeholder="Search products..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-full text-sm border border-gray-300 focus:outline-none focus:ring-2 focus:ring-orange-600"
-            />
-          </div>
-          <button 
-            onClick={() => setSearchTerm('')}
-            className="p-2 hover:bg-orange-600 rounded-full transition-colors"
-            title="Clear search"
-          >
-            <Icon name="XMarkIcon" size={18} className="text-white" />
-          </button>
-        </div>
-      </div>
-
       {/* Desktop & Tablet Layout */}
       <div className="hidden md:block container mx-auto">
         {/* Section Header */}
@@ -217,40 +190,11 @@ export default function FeaturedProducts() {
         </div>
       </div>
 
-      {/* Mobile Layout - 3 Column Grid */}
+      {/* Mobile Layout - Quick Picks 3 Column Grid */}
       <div className="md:hidden">
-        {/* Category Filter - Horizontal Scroll */}
-        {categories.length > 0 && (
-          <div className="px-3 pb-3 overflow-x-auto">
-            <div className="flex gap-2">
-              <button
-                onClick={() => setSelectedCategory(null)}
-                className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-                  selectedCategory === null
-                    ? 'bg-orange-500 text-white'
-                    : 'bg-white border border-gray-300 text-gray-700'
-                }`}
-              >
-                All
-              </button>
-              {categories.map(category => (
-                <button
-                  key={category}
-                  onClick={() => setSelectedCategory(category)}
-                  className={`px-3 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all ${
-                    selectedCategory === category
-                      ? 'bg-orange-500 text-white'
-                      : 'bg-white border border-gray-300 text-gray-700'
-                  }`}
-                >
-                  {category}
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Products - 3 Column Grid */}
+        <div className="px-3 mb-3 mt-2">
+          <h2 className="text-xl font-bold text-foreground mb-2">Quick Picks</h2>
+        </div>
         <div className="px-3">
           {filteredProducts.length > 0 ? (
             <div className="grid grid-cols-3 gap-2">
@@ -304,7 +248,6 @@ export default function FeaturedProducts() {
             </div>
           )}
         </div>
-
         {/* Mobile View All CTA */}
         {filteredProducts.length > 0 && (
           <div className="px-3 pt-3 pb-4">
