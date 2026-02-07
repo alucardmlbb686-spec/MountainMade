@@ -10,11 +10,11 @@ export const viewport: Viewport = {
 };
 
 export const metadata: Metadata = {
-  title: 'Next.js with Tailwind CSS',
-  description: 'A boilerplate project with Next.js and Tailwind CSS',
+  title: 'MountainMade - Pure Organic Foods from the Himalayas',
+  description: 'Discover 100% organic, mountain-sourced foods directly from Himalayan farmers. Honey, grains, spices, herbs, and artisan products with complete traceability.',
   icons: {
     icon: [
-      { url: '/favicon.ico', type: 'image/x-icon' }
+      { url: '/favicon.jpeg', type: 'image/jpeg' }
     ],
   },
 };
