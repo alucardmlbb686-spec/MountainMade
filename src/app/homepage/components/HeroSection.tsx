@@ -67,7 +67,7 @@ export default function HeroSection() {
     return () => { isMounted = false; };
   }, [authReady, supabase]);
 
-  // Auto-rotate carousel every 5 seconds
+  // Auto-rotate carousel every 5 seconds (mobile only)
   useEffect(() => {
     if (products.length === 0) return;
     
@@ -92,7 +92,7 @@ export default function HeroSection() {
 
   if (loading || products.length === 0) {
     return (
-      <section className="relative h-96 md:h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
+      <section className="relative h-96 md:min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
         <Icon name="ArrowPathIcon" size={48} className="text-primary animate-spin" />
       </section>
     );
@@ -101,109 +101,172 @@ export default function HeroSection() {
   const currentProduct = products[currentIndex];
 
   return (
-    <section className="relative h-96 md:h-screen flex items-center justify-center overflow-hidden group">
-      {/* Background Product Image */}
-      <div className="absolute inset-0 -z-10">
-        <AppImage
-          src={currentProduct.image_url || '/assets/images/no_image.png'}
-          alt={currentProduct.name}
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/50 to-black/70"></div>
-      </div>
+    <>
+      {/* MOBILE VIEW - PRODUCT CAROUSEL */}
+      <section className="md:hidden relative h-96 flex items-center justify-center overflow-hidden bg-black">
+        {/* Sliding Background */}
+        <div className="absolute inset-0 w-full h-full">
+          <div
+            key={currentIndex}
+            className="absolute inset-0 animate-fade-in"
+          >
+            <AppImage
+              src={currentProduct.image_url || '/assets/images/no_image.png'}
+              alt={currentProduct.name}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+          </div>
+        </div>
 
-      {/* Main Content */}
-      <div className="container mx-auto px-4 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-          {/* Left: Product Info */}
-          <div className={`text-white ${ isHydrated ? 'animate-fade-in-up' : 'opacity-0' }`}>
-            <span className="inline-block text-orange-400 text-sm font-bold uppercase tracking-widest mb-4">
-              New Arrival
+        {/* Sliding Content */}
+        <div className="absolute inset-0 flex flex-col justify-end z-10 p-4">
+          <div
+            key={`text-${currentIndex}`}
+            className="animate-fade-in"
+          >
+            <span className="text-orange-400 text-xs font-bold uppercase tracking-widest block mb-2">
+              {currentProduct.category}
             </span>
-            <h1 className="text-5xl md:text-6xl lg:text-7xl font-serif font-bold mb-4 leading-tight">
+            <h2 className="text-2xl font-serif font-bold text-white mb-2 line-clamp-2">
               {currentProduct.name}
-            </h1>
-            <p className="text-orange-300 text-lg font-medium mb-4">{currentProduct.category}</p>
-            <div className="flex items-baseline gap-4 mb-8">
-              <span className="text-5xl md:text-6xl font-bold">₹{currentProduct.price}</span>
-              <span className="text-white/70 text-lg">In Stock: {currentProduct.stock}</span>
+            </h2>
+            <div className="flex items-center justify-between mb-4">
+              <span className="text-3xl font-bold text-orange-400">₹{currentProduct.price}</span>
+              <span className="text-white/80 text-sm">{currentProduct.stock} in stock</span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-4">
-              <Link
-                href={`/product-details?id=${currentProduct.id}`}
-                className="btn btn-primary text-base px-8 py-3 shadow-xl"
-              >
-                View Product
-                <Icon name="ArrowRightIcon" size={20} />
-              </Link>
-              <Link
-                href="/categories"
-                className="btn bg-white/20 backdrop-blur-premium border border-white/40 text-white hover:bg-white/30 text-base px-8 py-3"
-              >
-                Shop All
-              </Link>
-            </div>
-          </div>
-
-          {/* Right: Product Image (Mobile/Desktop fallback) */}
-          <div className="hidden md:flex justify-end">
-            <div className="relative w-full max-w-sm">
-              <div className="aspect-square rounded-2xl overflow-hidden shadow-2xl border-4 border-white/10">
-                <AppImage
-                  src={currentProduct.image_url || '/assets/images/no_image.png'}
-                  alt={currentProduct.name}
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            </div>
+            <Link
+              href={`/product-details?id=${currentProduct.id}`}
+              className="block w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2 rounded-lg font-semibold transition-colors text-sm"
+            >
+              View Product
+            </Link>
           </div>
         </div>
-      </div>
 
-      {/* Navigation Arrows */}
-      <button
-        onClick={prevSlide}
-        className="absolute left-4 md:left-8 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/40 backdrop-blur-premium text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
-        aria-label="Previous product"
-      >
-        <Icon name="ChevronLeftIcon" size={24} />
-      </button>
+        {/* Navigation Arrows */}
+        <button
+          onClick={prevSlide}
+          className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full transition-all backdrop-blur-sm"
+          aria-label="Previous"
+        >
+          <Icon name="ChevronLeftIcon" size={20} />
+        </button>
 
-      <button
-        onClick={nextSlide}
-        className="absolute right-4 md:right-8 top-1/2 -translate-y-1/2 z-20 bg-white/20 hover:bg-white/40 backdrop-blur-premium text-white p-3 rounded-full transition-all opacity-0 group-hover:opacity-100"
-        aria-label="Next product"
-      >
-        <Icon name="ChevronRightIcon" size={24} />
-      </button>
+        <button
+          onClick={nextSlide}
+          className="absolute right-3 top-1/2 -translate-y-1/2 z-20 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full transition-all backdrop-blur-sm"
+          aria-label="Next"
+        >
+          <Icon name="ChevronRightIcon" size={20} />
+        </button>
 
-      {/* Dots Navigation */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-20 flex gap-2">
-        {products.map((_, index) => (
-          <button
-            key={index}
-            onClick={() => goToSlide(index)}
-            className={`transition-all rounded-full ${
-              index === currentIndex
-                ? 'bg-orange-500 w-8 h-2'
-                : 'bg-white/50 hover:bg-white/70 w-2 h-2'
-            }`}
-            aria-label={`Go to product ${index + 1}`}
+        {/* Dots Navigation */}
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
+          {products.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => goToSlide(index)}
+              className={`transition-all rounded-full ${
+                index === currentIndex
+                  ? 'bg-orange-500 w-6 h-2'
+                  : 'bg-white/40 hover:bg-white/60 w-2 h-2'
+              }`}
+              aria-label={`Go to slide ${index + 1}`}
+            />
+          ))}
+        </div>
+      </section>
+
+      {/* DESKTOP VIEW - STATIC HERO */}
+      <section className="hidden md:flex relative min-h-screen items-center justify-center overflow-hidden">
+        {/* Background Image */}
+        <div className="absolute inset-0 -z-10">
+          <AppImage
+            src="https://images.unsplash.com/photo-1590782936229-89dd6c88d5cf"
+            alt="Majestic mountain landscape with snow-capped peaks at sunrise"
+            className="w-full h-full object-cover"
           />
-        ))}
-      </div>
+          <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-background"></div>
+        </div>
 
-      {/* Trust Badges */}
-      <div className="absolute top-8 left-1/2 -translate-x-1/2 z-20 flex flex-wrap items-center justify-center gap-3">
-        <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-premium px-4 py-2 rounded-full shadow-lg border border-white/20">
-          <Icon name="CheckBadgeIcon" size={16} variant="solid" className="text-green-600" />
-          <span className="text-xs font-semibold text-gray-900">USDA Certified</span>
+        {/* Content */}
+        <div className="container mx-auto pt-32 pb-20 text-center relative z-10">
+          {/* Social Proof Banner */}
+          <div className={`flex flex-wrap items-center justify-center gap-3 mb-8 ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`}>
+            <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-premium px-5 py-2.5 rounded-full shadow-lg border border-white/20">
+              <Icon name="CheckBadgeIcon" size={18} variant="solid" className="text-green-600" />
+              <span className="text-sm font-semibold text-gray-900">USDA Organic Certified</span>
+            </div>
+            <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-premium px-5 py-2.5 rounded-full shadow-lg border border-white/20">
+              <Icon name="StarIcon" size={18} variant="solid" className="text-amber-500" />
+              <span className="text-sm font-semibold text-gray-900">4.9/5 from 12,000+ reviews</span>
+            </div>
+          </div>
+
+          {/* Headline */}
+          <h1 className={`text-6xl md:text-7xl lg:text-8xl text-white font-serif font-bold mb-6 leading-[1.1] tracking-tight ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
+            Himalayan Purity,<br />
+            <span className="text-gradient bg-gradient-to-r from-green-400 to-amber-400 bg-clip-text text-transparent">Delivered to Your Doorstep</span>
+          </h1>
+
+          {/* Subheadline */}
+          <p className={`text-xl md:text-2xl text-white/95 max-w-3xl mx-auto leading-relaxed mb-10 font-light ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
+            Join 50,000+ families enjoying 100% traceable, organic foods sourced directly from 500+ verified mountain farmers.
+          </p>
+
+          {/* Trust Metrics */}
+          <div className={`flex flex-wrap items-center justify-center gap-8 md:gap-12 mb-12 ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.5s' }}>
+            <div className="text-white">
+              <p className="text-4xl md:text-5xl font-bold mb-1">50K+</p>
+              <p className="text-sm text-white/80 font-medium">Happy Customers</p>
+            </div>
+            <div className="w-px h-16 bg-white/30"></div>
+            <div className="text-white">
+              <p className="text-4xl md:text-5xl font-bold mb-1">500+</p>
+              <p className="text-sm text-white/80 font-medium">Partner Farmers</p>
+            </div>
+            <div className="w-px h-16 bg-white/30"></div>
+            <div className="text-white">
+              <p className="text-4xl md:text-5xl font-bold mb-1">100%</p>
+              <p className="text-sm text-white/80 font-medium">Traceable Origin</p>
+            </div>
+          </div>
+
+          {/* CTAs */}
+          <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.6s' }}>
+            <Link href="/categories" className="btn btn-primary text-base px-10 py-4 shadow-xl">
+              Shop Premium Foods
+              <Icon name="ArrowRightIcon" size={20} />
+            </Link>
+            <Link href="/homepage#about" className="btn btn-secondary text-base px-10 py-4 bg-white/15 backdrop-blur-premium border-white/40 text-white hover:bg-white/25">
+              See Our Impact
+            </Link>
+          </div>
+
+          {/* Trust Badges Row */}
+          <div className={`flex flex-wrap items-center justify-center gap-8 mt-12 ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.7s' }}>
+            <div className="flex items-center gap-2.5 text-white/90 text-sm font-medium">
+              <Icon name="TruckIcon" size={20} />
+              <span>Free Shipping ₹999+</span>
+            </div>
+            <div className="flex items-center gap-2.5 text-white/90 text-sm font-medium">
+              <Icon name="ShieldCheckIcon" size={20} />
+              <span>100% Money-Back Guarantee</span>
+            </div>
+            <div className="flex items-center gap-2.5 text-white/90 text-sm font-medium">
+              <Icon name="ClockIcon" size={20} />
+              <span>Delivered in 2-3 Days</span>
+            </div>
+          </div>
+
+          {/* Scroll Indicator */}
+          <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/70 ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.8s' }}>
+            <span className="text-xs uppercase tracking-widest font-medium">Scroll</span>
+            <Icon name="ChevronDownIcon" size={24} className="animate-bounce" />
+          </div>
         </div>
-        <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-premium px-4 py-2 rounded-full shadow-lg border border-white/20">
-          <Icon name="StarIcon" size={16} variant="solid" className="text-amber-500" />
-          <span className="text-xs font-semibold text-gray-900">4.9/5 Reviews</span>
-        </div>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
