@@ -40,20 +40,20 @@ export default function CartPage() {
   return (
     <>
       <Header />
-      <main className="pt-24 pb-16 bg-background min-h-screen">
-        <div className="container mx-auto">
+      <main className="pt-20 md:pt-24 pb-12 md:pb-16 bg-background min-h-screen">
+        <div className="container mx-auto px-4 sm:px-6">
           {/* Page Header */}
-          <div className="mb-8">
-            <h1 className="text-4xl font-bold text-foreground font-serif mb-3">
+          <div className="mb-6 md:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold text-foreground font-serif mb-2 md:mb-3">
               Your Cart
             </h1>
-            <p className="text-muted-foreground">
+            <p className="text-sm sm:text-base text-muted-foreground">
               Review your mountain treasures before checkout
             </p>
           </div>
 
           {cartItems.length > 0 ? (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 md:gap-8">
               {/* Cart Items */}
               <div className="lg:col-span-2 space-y-4">
                 {cartItems.map((item) => (

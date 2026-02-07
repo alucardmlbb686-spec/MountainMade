@@ -307,4 +307,41 @@
     backdrop-filter: blur(20px) saturate(180%);
     -webkit-backdrop-filter: blur(20px) saturate(180%);
   }
+
+  /* Respect user's motion preferences */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+    }
+  }
+
+  /* Disable animations on small screens (mobile low-end devices) */
+  @media (max-width: 640px) {
+    .animate-spin,
+    .animate-bounce,
+    .animate-pulse {
+      animation: none !important;
+    }
+
+    [class*='transition-'],
+    [class*='duration-'] {
+      transition: none !important;
+    }
+
+    .group:hover > [class*='group-hover:'],
+    [class*='hover:'] {
+      transition: none !important;
+    }
+  }
+
+  /* For very low-end mobile devices, reduce transition duration */
+  @media (max-width: 480px) {
+    [class*='transition-'] {
+      transition-duration: 150ms !important;
+    }
+  }
 }
