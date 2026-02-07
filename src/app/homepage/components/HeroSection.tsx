@@ -104,6 +104,14 @@ export default function HeroSection() {
     <>
       {/* MOBILE VIEW - PRODUCT CAROUSEL */}
       <section className="md:hidden relative h-96 flex items-center justify-center overflow-hidden bg-black">
+        {/* Hot Badge - Top Center */}
+        <div className="absolute top-4 left-1/2 -translate-x-1/2 z-30 flex justify-center w-full">
+          <div className="bg-orange-500 text-white px-4 py-1 rounded-full text-xs font-bold flex items-center gap-1 shadow-lg">
+            <Icon name="StarIcon" size={16} variant="solid" />
+            Hot
+          </div>
+        </div>
+
         {/* Sliding Background */}
         <div className="absolute inset-0 w-full h-full">
           <div
