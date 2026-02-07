@@ -262,7 +262,7 @@ export default function AdminUploadPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
                 <label htmlFor="price" className="block text-sm font-semibold text-foreground mb-2">
-                  Price ($) *
+                  Price (₹) *
                 </label>
                 <input
                   type="number"

@@ -173,7 +173,7 @@ export default function AdminOrderHistoryPage() {
               <div>
                 <h1 className="text-2xl font-bold text-foreground font-serif">Order History</h1>
                 <p className="text-sm text-muted-foreground">
-                  {filteredOrders.length} orders • ${totalRevenue.toFixed(2)} total revenue
+                  {filteredOrders.length} orders • ₹{totalRevenue.toFixed(2)} total revenue
                 </p>
               </div>
             </div>
@@ -265,7 +265,7 @@ export default function AdminOrderHistoryPage() {
                         <span className="text-muted-foreground">{order.itemCount} items</span>
                       </td>
                       <td className="p-4">
-                        <span className="font-bold text-foreground">${order.totalAmount.toFixed(2)}</span>
+                        <span className="font-bold text-foreground">₹{order.totalAmount.toFixed(2)}</span>
                       </td>
                       <td className="p-4">
                         <span className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold ${getStatusColor(order.status)}`}>

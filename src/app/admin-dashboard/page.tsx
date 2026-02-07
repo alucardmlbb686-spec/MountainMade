@@ -100,7 +100,7 @@ export default function AdminDashboardPage() {
     {
       title: 'Total Revenue',
       value: `₹${stats.totalRevenue.toFixed(2)}`,
-      icon: 'CurrencyDollarIcon',
+      icon: 'CurrencyRupeeIcon',
       color: 'text-amber-500',
       bgColor: 'bg-amber-500/10',
       link: '/admin-dashboard/orders',
@@ -153,7 +153,7 @@ export default function AdminDashboardPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background w-full max-w-full overflow-x-hidden">
       {/* Header */}
       <header className="bg-card border-b border-border sticky top-0 z-40">
         <div className="container mx-auto px-4 py-4">
@@ -179,12 +179,12 @@ export default function AdminDashboardPage() {
         </div>
       </header>
 
-      <main className="container mx-auto px-4 py-8">
+      <main className="container mx-auto px-2 sm:px-4 py-8 w-full">
         {/* Stats Grid */}
-        <div className="mb-12">
+        <div className="mb-12 w-full">
           <h2 className="text-2xl font-bold text-foreground mb-6 font-serif">Overview</h2>
           {loadingStats ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
               {[1, 2, 3, 4].map((i) => (
                 <div key={i} className="bg-card rounded-xl border border-border p-6 animate-pulse">
                   <div className="h-12 bg-muted rounded mb-4"></div>
@@ -193,7 +193,7 @@ export default function AdminDashboardPage() {
               ))}
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full">
               {statCards.map((stat, index) => (
                 <Link
                   key={index}
@@ -215,9 +215,9 @@ export default function AdminDashboardPage() {
         </div>
 
         {/* Quick Actions */}
-        <div>
+        <div className="w-full">
           <h2 className="text-2xl font-bold text-foreground mb-6 font-serif">Quick Actions</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 w-full">
             {quickActions.map((action, index) => (
               <Link
                 key={index}
