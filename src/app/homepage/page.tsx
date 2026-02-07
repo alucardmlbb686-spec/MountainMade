@@ -4,6 +4,7 @@ import Footer from '@/components/common/Footer';
 import HeroSection from './components/HeroSection';
 import TrustIndicators from './components/TrustIndicators';
 import FeaturedCategories from './components/FeaturedCategories';
+import BestSellers from './components/BestSellers';
 import FeaturedProducts from './components/FeaturedProducts';
 import SourcingStory from './components/SourcingStory';
 import Testimonials from './components/Testimonials';
@@ -23,6 +24,7 @@ export default function Homepage() {
         <HeroSection />
         <TrustIndicators />
         <FeaturedCategories />
+        <BestSellers />
         <FeaturedProducts />
         <SourcingStory />
         <Testimonials />
