@@ -73,7 +73,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       } catch (error) {
         if (isMounted) {
-          // Log real errors, but auth initialization shouldn't fail silently
+          // Suppress AbortError and allow UI to load
+          let errorMsg = '';
+          if (typeof error === 'object' && error !== null && 'message' in error) {
+            errorMsg = (error as any).message;
+          } else {
+            errorMsg = String(error);
+          }
+          if (errorMsg.includes('AbortError')) {
+            setAuthReady(true);
+            setLoading(false);
+            return;
+          }
           console.error('Auth initialization failed:', error);
           setAuthReady(true); // Set to true anyway to prevent UI blocks
         }
