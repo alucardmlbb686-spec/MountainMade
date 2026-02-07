@@ -1,0 +1,105 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import AppImage from '@/components/ui/AppImage';
+import Icon from '@/components/ui/AppIcon';
+import Link from 'next/link';
+
+export default function HeroSection() {
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
+
+  return (
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
+      {/* Background Image */}
+      <div className="absolute inset-0 -z-10">
+        <AppImage
+          src="https://images.unsplash.com/photo-1590782936229-89dd6c88d5cf"
+          alt="Majestic mountain landscape with snow-capped peaks at sunrise, golden light illuminating valleys"
+          className="w-full h-full object-cover" />
+        
+        <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/30 to-background"></div>
+      </div>
+
+      {/* Content */}
+      <div className="container mx-auto pt-32 pb-20 text-center relative z-10">
+        {/* Social Proof Banner */}
+        <div className={`flex flex-wrap items-center justify-center gap-3 mb-8 ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`}>
+          <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-premium px-5 py-2.5 rounded-full shadow-lg border border-white/20">
+            <Icon name="CheckBadgeIcon" size={18} variant="solid" className="text-green-600" />
+            <span className="text-sm font-semibold text-gray-900">USDA Organic Certified</span>
+          </div>
+          <div className="inline-flex items-center gap-2 bg-white/95 backdrop-blur-premium px-5 py-2.5 rounded-full shadow-lg border border-white/20">
+            <Icon name="StarIcon" size={18} variant="solid" className="text-amber-500" />
+            <span className="text-sm font-semibold text-gray-900">4.9/5 from 12,000+ reviews</span>
+          </div>
+        </div>
+
+        {/* Headline */}
+        <h1 className={`text-6xl md:text-7xl lg:text-8xl text-white font-serif font-bold mb-6 leading-[1.1] tracking-tight ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.2s' }}>
+          Himalayan Purity,<br />
+          <span className="text-gradient bg-gradient-to-r from-green-400 to-amber-400 bg-clip-text text-transparent">Delivered to Your Doorstep</span>
+        </h1>
+
+        {/* Subheadline */}
+        <p className={`text-xl md:text-2xl text-white/95 max-w-3xl mx-auto leading-relaxed mb-10 font-light ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.4s' }}>
+          Join 50,000+ families enjoying 100% traceable, organic foods sourced directly from 500+ verified mountain farmers.
+        </p>
+
+        {/* Trust Metrics */}
+        <div className={`flex flex-wrap items-center justify-center gap-8 md:gap-12 mb-12 ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.5s' }}>
+          <div className="text-white">
+            <p className="text-4xl md:text-5xl font-bold mb-1">50K+</p>
+            <p className="text-sm text-white/80 font-medium">Happy Customers</p>
+          </div>
+          <div className="w-px h-16 bg-white/30"></div>
+          <div className="text-white">
+            <p className="text-4xl md:text-5xl font-bold mb-1">500+</p>
+            <p className="text-sm text-white/80 font-medium">Partner Farmers</p>
+          </div>
+          <div className="w-px h-16 bg-white/30"></div>
+          <div className="text-white">
+            <p className="text-4xl md:text-5xl font-bold mb-1">100%</p>
+            <p className="text-sm text-white/80 font-medium">Traceable Origin</p>
+          </div>
+        </div>
+
+        {/* CTAs */}
+        <div className={`flex flex-col sm:flex-row items-center justify-center gap-4 ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.6s' }}>
+          <Link href="/categories" className="btn btn-primary text-base px-10 py-4 shadow-xl">
+            Shop Premium Foods
+            <Icon name="ArrowRightIcon" size={20} />
+          </Link>
+          <Link href="/homepage#about" className="btn btn-secondary text-base px-10 py-4 bg-white/15 backdrop-blur-premium border-white/40 text-white hover:bg-white/25">
+            See Our Impact
+          </Link>
+        </div>
+
+        {/* Trust Badges Row */}
+        <div className={`flex flex-wrap items-center justify-center gap-8 mt-12 ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.7s' }}>
+          <div className="flex items-center gap-2.5 text-white/90 text-sm font-medium">
+            <Icon name="TruckIcon" size={20} />
+            <span>Free Shipping ₹999+</span>
+          </div>
+          <div className="flex items-center gap-2.5 text-white/90 text-sm font-medium">
+            <Icon name="ShieldCheckIcon" size={20} />
+            <span>100% Money-Back Guarantee</span>
+          </div>
+          <div className="flex items-center gap-2.5 text-white/90 text-sm font-medium">
+            <Icon name="ClockIcon" size={20} />
+            <span>Delivered in 2-3 Days</span>
+          </div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className={`absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-white/70 ${isHydrated ? 'animate-fade-in-up' : 'opacity-0'}`} style={{ animationDelay: '0.8s' }}>
+          <span className="text-xs uppercase tracking-widest font-medium">Scroll</span>
+          <Icon name="ChevronDownIcon" size={24} className="animate-bounce" />
+        </div>
+      </div>
+    </section>);
+
+}

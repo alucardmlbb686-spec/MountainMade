@@ -1,0 +1,60 @@
+"use client";
+
+import { useState } from 'react';
+
+import Header from '@/components/common/Header';
+import Footer from '@/components/common/Footer';
+import FilterSidebar from './components/FilterSidebar';
+import ProductGrid from './components/ProductGrid';
+import Icon from '@/components/ui/AppIcon';
+
+export default function CategoriesPage() {
+  const [filters, setFilters] = useState({
+    categories: [],
+    priceRange: [0, 5000],
+    organicOnly: false,
+    sortBy: 'popularity',
+  });
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
+
+  return (
+    <>
+      <Header />
+      <main className="pt-24 pb-16 bg-background min-h-screen">
+        <div className="container mx-auto">
+          {/* Page Header */}
+          <div className="mb-8">
+            <h1 className="text-4xl font-bold text-foreground font-serif mb-3">
+              Explore Our Collection
+            </h1>
+            <p className="text-muted-foreground">
+              Curated selections of pure, organic foods from mountain regions
+            </p>
+          </div>
+
+          {/* Mobile Filter Button */}
+          <button
+            onClick={() => setIsMobileFilterOpen(true)}
+            className="lg:hidden btn btn-secondary mb-6 w-full"
+          >
+            <Icon name="AdjustmentsHorizontalIcon" size={20} />
+            Filters & Sort
+          </button>
+
+          {/* Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <FilterSidebar
+              onFilterChange={setFilters}
+              isMobileOpen={isMobileFilterOpen}
+              onMobileClose={() => setIsMobileFilterOpen(false)}
+            />
+            <div className="lg:col-span-3">
+              <ProductGrid filters={filters} />
+            </div>
+          </div>
+        </div>
+      </main>
+      <Footer />
+    </>
+  );
+}
