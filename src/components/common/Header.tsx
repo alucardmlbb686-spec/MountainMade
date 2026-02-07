@@ -304,8 +304,8 @@ export default function Header() {
       </div>
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full bg-card border-b border-border shadow-lg">
-          <nav className="container mx-auto px-3 py-4 flex flex-col gap-3">
+        <div className="md:hidden fixed top-16 left-0 right-0 bg-white border-b border-border shadow-lg z-40 max-h-[calc(100vh-4rem)] overflow-y-auto">
+          <nav className="px-4 py-4 flex flex-col gap-2">
             {navLinks?.map((link) => (
               <Link
                 key={link?.id}
