@@ -57,7 +57,7 @@ export default function Header() {
               alt="MountainMade Logo"
               className="w-6 h-6 sm:w-7 sm:h-7 md:w-9 md:h-9 lg:w-11 lg:h-11 object-contain flex-shrink-0"
             />
-            <div className="hidden md:block min-w-0">
+            <div className="min-w-0">
               <span className="text-xs sm:text-sm md:text-base lg:text-lg font-bold text-foreground font-serif leading-tight block truncate">MountainMade</span>
               <span className="hidden lg:block text-xs text-muted-foreground font-medium leading-tight">Organic</span>
             </div>
