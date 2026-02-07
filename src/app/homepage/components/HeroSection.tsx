@@ -181,11 +181,13 @@ export default function HeroSection() {
         </div>
 
         {/* Featured & Products Grid Below Carousel */}
-        <div className="w-full bg-gradient-to-b from-black to-white/50 px-4 py-8">
+        <div className="w-full bg-gradient-to-b from-black via-black to-white px-4 py-8">
           {/* Featured Products Title */}
-          <h3 className="text-2xl font-serif font-bold text-white mb-6 text-center">
-            Featured Products
-          </h3>
+          <div className="mb-6">
+            <h3 className="text-xl sm:text-2xl font-serif font-bold text-center py-4 px-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg shadow-lg">
+              Featured Products
+            </h3>
+          </div>
 
           {/* Products Grid - 2 columns on mobile */}
           <div className="grid grid-cols-2 gap-4 mb-8">
