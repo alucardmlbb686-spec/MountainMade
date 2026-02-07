@@ -245,13 +245,13 @@ export default function Header() {
                 </>
               )}
 
-              {/* Mobile Menu Button */}
+              {/* Mobile Menu Button - Only on tablet/desktop */}
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden p-1.5 md:p-2 hover:opacity-70"
+                className="hidden md:block p-1.5 hover:opacity-70"
                 aria-label="Toggle menu"
               >
-                <Icon name={isMenuOpen ? 'XMarkIcon' : 'Bars3Icon'} size={24} className="text-foreground md:w-6 md:h-6" />
+                <Icon name={isMenuOpen ? 'XMarkIcon' : 'Bars3Icon'} size={24} className="text-foreground" />
               </button>
             </div>
           </div>
