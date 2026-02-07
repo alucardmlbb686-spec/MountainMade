@@ -103,9 +103,9 @@ export default function HeroSection() {
   return (
     <>
       {/* MOBILE VIEW - PRODUCT CAROUSEL */}
-      <section className="md:hidden relative min-h-screen flex flex-col items-center justify-start overflow-hidden bg-white pt-24">
+      <section className="md:hidden relative min-h-screen flex flex-col items-center justify-start overflow-x-hidden overflow-y-auto bg-white pt-24 w-full">
         {/* Carousel Section */}
-        <div className="relative h-96 w-full flex items-center justify-center">
+        <div className="relative h-96 w-full flex items-center justify-center overflow-hidden">
           {/* Sliding Background */}
           <div className="absolute inset-0 w-full h-full">
             <div
@@ -181,16 +181,16 @@ export default function HeroSection() {
         </div>
 
         {/* Featured & Products Grid Below Carousel */}
-        <div className="w-full bg-white px-4 py-8">
+        <div className="w-full bg-white px-3 sm:px-4 py-8 overflow-x-hidden">
           {/* Featured Products Title */}
-          <div className="mb-6">
+          <div className="mb-6 w-full">
             <h3 className="text-xl sm:text-2xl font-serif font-bold text-center py-4 px-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg shadow-lg">
               Featured Products
             </h3>
           </div>
 
           {/* Products Grid - 2 columns on mobile */}
-          <div className="grid grid-cols-2 gap-4 mb-8">
+          <div className="grid grid-cols-2 gap-3 mb-8 w-full">
             {products.slice(0, 4).map((product) => (
               <Link
                 key={product.id}
@@ -208,7 +208,7 @@ export default function HeroSection() {
                   <h4 className="text-xs font-semibold text-gray-900 line-clamp-2 mb-1">
                     {product.name}
                   </h4>
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-2">
                     <span className="text-sm font-bold text-orange-500">₹{product.price}</span>
                     <span className="text-xs text-gray-600">{product.stock} left</span>
                   </div>
@@ -220,7 +220,7 @@ export default function HeroSection() {
           {/* View All Button */}
           <Link
             href="/categories"
-            className="block w-full bg-primary hover:bg-primary/90 text-white text-center py-3 rounded-lg font-semibold transition-colors"
+            className="block w-full bg-primary hover:bg-primary/90 text-white text-center py-3 px-4 rounded-lg font-semibold transition-colors"
           >
             View All Products
           </Link>

@@ -111,7 +111,7 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all ${
+      className={`fixed top-0 left-0 w-full z-50 transition-all overflow-x-hidden ${
         isScrolled ? 'glass-card shadow-lg py-1.5 md:py-2.5' : 'bg-white md:bg-transparent py-1.5 md:py-3'
       }`}
     >
@@ -125,7 +125,7 @@ export default function Header() {
         </div>
       )}
 
-      <div className="container mx-auto px-2 md:px-3 lg:px-4 py-1 md:py-0">
+      <div className="container mx-auto px-2 md:px-3 lg:px-4 py-1 md:py-0 overflow-x-hidden">
         <div className="flex flex-col gap-2 md:gap-0 lg:gap-0">
           {/* First Row: Logo, Nav, Actions */}
           <div className="flex items-center justify-between gap-1 md:gap-2 lg:gap-4">
