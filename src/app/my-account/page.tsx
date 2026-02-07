@@ -136,7 +136,7 @@ export default function MyAccountPage() {
     <>
       <Header />
       <main className="min-h-screen bg-gradient-to-b from-background to-muted/20 pt-32 pb-16">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-4 w-full max-w-full overflow-x-hidden">
           {/* Account Header */}
           <div className="mb-8">
             <div className="flex items-center justify-between gap-4 mb-4">
@@ -210,9 +210,9 @@ export default function MyAccountPage() {
                       </div>
                       <div className="text-right">
                         <div className="text-2xl font-bold text-foreground mb-2">
-                          ${order.total_amount.toFixed(2)}
+                          ₹{order.total_amount.toFixed(2)}
                         </div>
-        <span
+                        <span
                           className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-semibold border ${getStatusColor(
                             order.status
                           )}`}
@@ -244,7 +244,7 @@ export default function MyAccountPage() {
                             <p className="text-sm text-muted-foreground">Quantity: {item.quantity}</p>
                           </div>
                           <div className="text-right">
-                            <p className="font-semibold text-foreground">${item.price.toFixed(2)}</p>
+                            <p className="font-semibold text-foreground">₹{item.price.toFixed(2)}</p>
                             <p className="text-xs text-muted-foreground">each</p>
                           </div>
                         </div>
