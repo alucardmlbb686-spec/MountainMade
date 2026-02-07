@@ -176,14 +176,6 @@ export default function BestSellers() {
                 }`}
                 style={{ animationDelay: `${0.1 + index * 0.05}s` }}
               >
-                {/* Badge */}
-                <div className="absolute top-2 right-2 z-10">
-                  <div className="bg-orange-500 text-white px-2 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                    <Icon name="StarIcon" size={12} variant="solid" />
-                    Hot
-                  </div>
-                </div>
-
                 {/* Product Image */}
                 <div className="w-full h-40 overflow-hidden bg-slate-100 relative">
                   <AppImage
