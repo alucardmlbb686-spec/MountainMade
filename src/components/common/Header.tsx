@@ -157,6 +157,51 @@ export default function Header() {
               ))}
             </nav>
 
+            {/* Desktop Search Bar */}
+            <form onSubmit={handleSearch} className="hidden md:block lg:flex-1 lg:max-w-xs">
+              <div className="relative">
+                <input
+                  type="text"
+                  placeholder="Search products..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onFocus={() => searchQuery && setShowSuggestions(true)}
+                  className="w-full px-4 py-2 pl-10 text-sm bg-gray-50 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
+                />
+                <Icon name="MagnifyingGlassIcon" size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary" />
+                {searchQuery && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setSearchQuery('');
+                      setSuggestions([]);
+                      setShowSuggestions(false);
+                    }}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                    aria-label="Clear search"
+                  >
+                    <Icon name="XMarkIcon" size={16} />
+                  </button>
+                )}
+
+                {/* Search Suggestions Dropdown */}
+                {showSuggestions && suggestions.length > 0 && (
+                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto z-50">
+                    {suggestions.map((product) => (
+                      <button
+                        key={product.id}
+                        type="button"
+                        onClick={() => handleSuggestionClick(product.name)}
+                        className="w-full text-left px-4 py-2.5 hover:bg-gray-100 border-b border-gray-100 last:border-b-0 transition-colors text-sm"
+                      >
+                        <span className="text-foreground font-medium">{product.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </form>
+
             {/* Actions */}
             <div className="flex items-center gap-2 md:gap-3 lg:gap-4">
               {/* Trust Badge - Hidden on small screens */}
