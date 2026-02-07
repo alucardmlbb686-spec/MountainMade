@@ -44,13 +44,13 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 ${
-        isScrolled ? 'glass-card shadow-lg py-1.5 md:py-2.5' : 'bg-transparent py-1.5 md:py-3'
+      className={`fixed top-0 left-0 w-full z-50 transition-all ${
+        isScrolled ? 'glass-card shadow-lg py-1.5 md:py-2.5' : 'bg-white md:bg-transparent py-1.5 md:py-3'
       }`}
     >
       {/* Top Banner - Hidden on mobile */}
       {!isScrolled && (
-        <div className="hidden sm:block bg-gradient-to-r from-primary to-green-700 text-primary-foreground py-2 text-center text-xs sm:text-sm font-medium">
+        <div className="hidden md:block bg-gradient-to-r from-primary to-green-700 text-primary-foreground py-2 text-center text-xs sm:text-sm font-medium">
           <div className="container mx-auto flex items-center justify-center gap-2 px-2">
             <Icon name="SparklesIcon" size={14} variant="solid" />
             <span className="font-semibold">15% OFF + Free Shipping | Code: MOUNTAIN15</span>
@@ -58,8 +58,8 @@ export default function Header() {
         </div>
       )}
 
-      <div className="container mx-auto px-2 md:px-3 lg:px-4">
-        <div className="flex flex-col gap-3 lg:gap-0">
+      <div className="container mx-auto px-2 md:px-3 lg:px-4 py-1 md:py-0">
+        <div className="flex flex-col gap-2 md:gap-0 lg:gap-0">
           {/* First Row: Logo, Nav, Actions */}
           <div className="flex items-center justify-between gap-1 md:gap-2 lg:gap-4">
             {/* Logo */}
@@ -145,16 +145,26 @@ export default function Header() {
           </div>
 
           {/* Second Row: Search Bar (Mobile Only) */}
-          <form onSubmit={handleSearch} className="lg:hidden mb-2">
+          <form onSubmit={handleSearch} className="md:hidden w-full">
             <div className="relative">
               <input
                 type="text"
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full px-4 py-2 pl-10 pr-4 text-sm bg-white border border-border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="w-full px-4 py-2.5 pl-10 text-sm bg-gray-50 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
               />
-              <Icon name="MagnifyingGlassIcon" size={18} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
+              <Icon name="MagnifyingGlassIcon" size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary" />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
+                  aria-label="Clear search"
+                >
+                  <Icon name="XMarkIcon" size={18} />
+                </button>
+              )}
             </div>
           </form>
         </div>
