@@ -34,43 +34,43 @@ export default function Header() {
 
   return (
     <header
-      className={`fixed top-0 left-0 w-full z-50 transition-all ${
-        isScrolled ? 'glass-card shadow-lg py-3' : 'bg-transparent py-4'
+      className={`fixed top-0 left-0 w-full z-50 ${
+        isScrolled ? 'glass-card shadow-lg py-2 md:py-3' : 'bg-transparent py-2 md:py-4'
       }`}
     >
-      {/* Top Banner */}
+      {/* Top Banner - Hidden on mobile */}
       {!isScrolled && (
-        <div className="bg-gradient-to-r from-primary to-green-700 text-primary-foreground py-2.5 text-center text-sm font-medium">
-          <div className="container mx-auto flex items-center justify-center gap-2">
-            <Icon name="SparklesIcon" size={18} variant="solid" />
-            <span className="font-semibold">New Customer Offer: 15% OFF + Free Shipping | Code: MOUNTAIN15</span>
+        <div className="hidden sm:block bg-gradient-to-r from-primary to-green-700 text-primary-foreground py-2 text-center text-xs sm:text-sm font-medium">
+          <div className="container mx-auto flex items-center justify-center gap-2 px-2">
+            <Icon name="SparklesIcon" size={14} variant="solid" />
+            <span className="font-semibold">15% OFF + Free Shipping | Code: MOUNTAIN15</span>
           </div>
         </div>
       )}
 
-      <div className="container mx-auto">
-        <div className="flex items-center justify-between">
+      <div className="container mx-auto px-3 md:px-4">
+        <div className="flex items-center justify-between gap-2 md:gap-4">
           {/* Logo */}
-          <Link href="/homepage" className="flex items-center gap-3 group">
+          <Link href="/homepage" className="flex items-center gap-2 md:gap-3 flex-shrink-0">
             <AppImage
               src="/assets/images/WhatsApp_Image_2026-02-04_at_1.00.46_PM-1770372538730.jpeg"
               alt="MountainMade Logo"
-              className="w-12 h-12 object-contain group-hover:scale-110 transition-transform"
+              className="w-8 h-8 md:w-12 md:h-12 object-contain"
             />
-            <div>
-              <span className="text-2xl font-bold text-foreground font-serif block leading-none tracking-tight">MountainMade</span>
-              <span className="text-xs text-muted-foreground font-medium">100% Organic Certified</span>
+            <div className="hidden sm:block">
+              <span className="text-lg md:text-2xl font-bold text-foreground font-serif block leading-none tracking-tight">MountainMade</span>
+              <span className="hidden md:block text-xs text-muted-foreground font-medium">100% Organic Certified</span>
             </div>
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden lg:flex items-center gap-8">
+          <nav className="hidden lg:flex items-center gap-6 xl:gap-8">
             {navLinks?.map((link) => (
               <Link
                 key={link?.id}
                 href={link?.href}
-                className={`text-sm font-semibold transition-colors hover:text-primary relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all hover:after:w-full ${
-                  pathname === link?.href ? 'text-primary after:w-full' : 'text-foreground'
+                className={`text-sm font-semibold hover:text-primary ${
+                  pathname === link?.href ? 'text-primary' : 'text-foreground'
                 }`}
               >
                 {link?.label}
@@ -79,43 +79,43 @@ export default function Header() {
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-4">
-            {/* Trust Badge */}
-            <div className="hidden md:flex items-center gap-2 text-xs text-muted-foreground bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200">
+          <div className="flex items-center gap-2 md:gap-3 lg:gap-4">
+            {/* Trust Badge - Hidden on small screens */}
+            <div className="hidden lg:flex items-center gap-2 text-xs text-muted-foreground bg-amber-50 px-3 py-1.5 rounded-full border border-amber-200">
               <Icon name="StarIcon" size={14} variant="solid" className="text-amber-500" />
               <span className="font-bold text-amber-700">4.9/5</span>
             </div>
 
             <Link
               href="/cart"
-              className="relative p-2.5 hover:bg-muted rounded-full transition-colors"
+              className="relative p-2 md:p-2.5 hover:opacity-70"
             >
-              <Icon name="ShoppingCartIcon" size={24} className="text-foreground" />
+              <Icon name="ShoppingCartIcon" size={20} className="text-foreground md:w-6 md:h-6" />
               {itemCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center shadow-md">
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-4 h-4 md:w-5 md:h-5 flex items-center justify-center shadow-md">
                   {itemCount}
                 </span>
               )}
             </Link>
 
             {user ? (
-              <Link href="/my-account" className="hidden sm:flex items-center gap-2 btn btn-secondary text-sm px-4 py-2">
-                <Icon name="UserCircleIcon" size={18} />
-                My Account
+              <Link href="/my-account" className="hidden md:flex items-center gap-2 btn btn-secondary text-xs md:text-sm px-2 md:px-4 py-1.5 md:py-2">
+                <Icon name="UserCircleIcon" size={16} />
+                <span className="hidden lg:inline">Account</span>
               </Link>
             ) : (
               <>
-                <Link href="/admin-login" className="hidden sm:flex items-center gap-2 btn btn-secondary text-sm px-4 py-2">
+                <Link href="/admin-login" className="hidden lg:flex items-center gap-2 btn btn-secondary text-sm px-4 py-2">
                   <Icon name="ShieldCheckIcon" size={18} />
                   Admin
                 </Link>
 
-                <Link href="/wholesale-login" className="hidden sm:flex items-center gap-2 btn btn-secondary text-sm px-4 py-2">
+                <Link href="/wholesale-login" className="hidden lg:flex items-center gap-2 btn btn-secondary text-sm px-4 py-2">
                   <Icon name="BuildingStorefrontIcon" size={18} />
                   Wholesale
                 </Link>
 
-                <Link href="/user-login" className="hidden sm:block btn btn-primary text-sm px-6 py-2.5">
+                <Link href="/user-login" className="hidden md:block btn btn-primary text-xs md:text-sm px-3 md:px-6 py-1.5 md:py-2.5">
                   Sign In
                 </Link>
               </>
@@ -124,25 +124,25 @@ export default function Header() {
             {/* Mobile Menu Button */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden p-2 hover:bg-muted rounded-lg transition-colors"
+              className="lg:hidden p-1.5 md:p-2 hover:opacity-70"
               aria-label="Toggle menu"
             >
-              <Icon name={isMenuOpen ? 'XMarkIcon' : 'Bars3Icon'} size={24} className="text-foreground" />
+              <Icon name={isMenuOpen ? 'XMarkIcon' : 'Bars3Icon'} size={20} className="text-foreground md:w-6 md:h-6" />
             </button>
           </div>
         </div>
       </div>
       {/* Mobile Menu */}
       {isMenuOpen && (
-        <div className="lg:hidden absolute top-full left-0 w-full glass-card shadow-lg">
-          <nav className="container mx-auto py-6 flex flex-col gap-4">
+        <div className="lg:hidden absolute top-full left-0 w-full bg-card border-b border-border shadow-lg">
+          <nav className="container mx-auto px-3 py-4 flex flex-col gap-3">
             {navLinks?.map((link) => (
               <Link
                 key={link?.id}
                 href={link?.href}
                 onClick={() => setIsMenuOpen(false)}
-                className={`text-base font-medium transition-colors hover:text-primary py-2 ${
-                  pathname === link?.href ? 'text-primary' : 'text-foreground'
+                className={`text-sm font-medium py-2 ${
+                  pathname === link?.href ? 'text-primary' : 'text-foreground hover:text-primary'
                 }`}
               >
                 {link?.label}
