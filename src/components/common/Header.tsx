@@ -90,7 +90,7 @@ export default function Header() {
               href="/cart"
               className="relative p-2 md:p-2.5 hover:opacity-70"
             >
-              <Icon name="ShoppingCartIcon" size={20} className="text-foreground md:w-6 md:h-6" />
+              <Icon name="ShoppingCartIcon" size={24} className="text-foreground md:w-6 md:h-6" />
               {itemCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full w-4 h-4 md:w-5 md:h-5 flex items-center justify-center shadow-md">
                   {itemCount}
@@ -127,7 +127,7 @@ export default function Header() {
               className="lg:hidden p-1.5 md:p-2 hover:opacity-70"
               aria-label="Toggle menu"
             >
-              <Icon name={isMenuOpen ? 'XMarkIcon' : 'Bars3Icon'} size={20} className="text-foreground md:w-6 md:h-6" />
+              <Icon name={isMenuOpen ? 'XMarkIcon' : 'Bars3Icon'} size={24} className="text-foreground md:w-6 md:h-6" />
             </button>
           </div>
         </div>
