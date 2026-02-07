@@ -43,9 +43,9 @@ export default function UserLoginPage() {
   return (
     <>
       <Header />
-      <main className="pt-24 pb-16 bg-background min-h-screen">
-        <div className="container mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center max-w-6xl mx-auto">
+      <main className="pt-20 pb-8 bg-background min-h-screen w-full max-w-full overflow-x-hidden">
+        <div className="w-full max-w-md mx-auto px-2 sm:px-4">
+          <div className="flex flex-col gap-8 items-center w-full">
             {/* Left Side - Branding */}
             <div className="hidden lg:block">
               <div className="relative rounded-xl-organic overflow-hidden premium-shadow">
@@ -70,10 +70,10 @@ export default function UserLoginPage() {
             </div>
 
             {/* Right Side - Forms */}
-            <div>
-              <div className="bg-card rounded-xl-organic border border-border p-8 lg:p-12 premium-shadow">
+            <div className="w-full">
+              <div className="bg-card rounded-xl-organic border border-border p-4 sm:p-6 premium-shadow w-full">
                 {/* Logo (Mobile) */}
-                <div className="lg:hidden flex items-center gap-2 mb-8">
+                <div className="lg:hidden flex items-center gap-2 mb-6">
                   <Icon name="MountainIcon" size={32} className="text-primary" variant="solid" />
                   <span className="text-2xl font-bold text-foreground font-serif">MountainMade</span>
                 </div>

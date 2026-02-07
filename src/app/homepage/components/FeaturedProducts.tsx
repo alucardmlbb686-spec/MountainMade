@@ -191,18 +191,18 @@ export default function FeaturedProducts() {
       </div>
 
       {/* Mobile Layout - Quick Picks 3 Column Grid */}
-      <div className="md:hidden">
+      <div className="md:hidden w-full max-w-full overflow-x-hidden">
         <div className="px-3 mb-3 mt-2">
           <h2 className="text-xl font-bold text-foreground mb-2">Quick Picks</h2>
         </div>
-        <div className="px-3">
+        <div className="px-1">
           {filteredProducts.length > 0 ? (
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-3 gap-2 w-full">
               {filteredProducts.map((product, index) => (
                 <Link
                   key={product.id}
                   href={`/product-details?id=${product.id}`}
-                  className={`group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all flex flex-col ${
+                  className={`group bg-white rounded-lg border border-gray-200 overflow-hidden hover:shadow-md transition-all flex flex-col w-full ${
                     isHydrated ? 'animate-fade-in-up' : 'opacity-0'
                   }`}
                   style={{ animationDelay: `${0.1 + index * 0.03}s` }}
@@ -250,7 +250,7 @@ export default function FeaturedProducts() {
         </div>
         {/* Mobile View All CTA */}
         {filteredProducts.length > 0 && (
-          <div className="px-3 pt-3 pb-4">
+          <div className="px-1 pt-3 pb-4">
             <Link href="/categories" className="w-full block text-center bg-orange-500 hover:bg-orange-600 text-white py-2.5 rounded-lg font-semibold transition-colors text-sm">
               View All Products
             </Link>
