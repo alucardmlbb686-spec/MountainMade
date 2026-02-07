@@ -19,7 +19,7 @@ export default function TrustIndicators() {
   ];
 
   return (
-    <section className="py-20 border-t border-b border-border bg-gradient-to-b from-slate-50 via-white to-slate-50">
+    <section className="hidden md:block py-20 border-t border-b border-border bg-gradient-to-b from-slate-50 via-white to-slate-50">
       <div className="container mx-auto">
         {/* Section Header */}
         <div className="text-center mb-12">

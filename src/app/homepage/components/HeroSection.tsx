@@ -103,81 +103,125 @@ export default function HeroSection() {
   return (
     <>
       {/* MOBILE VIEW - PRODUCT CAROUSEL */}
-      <section className="md:hidden relative h-96 flex items-center justify-center overflow-hidden bg-black">
-        {/* Removed Hot badge from mobile carousel */}
-        {/* Removed Hot badge from top right corner */}
-
-        {/* Sliding Background */}
-        <div className="absolute inset-0 w-full h-full">
-          <div
-            key={currentIndex}
-            className="absolute inset-0 animate-fade-in"
-          >
-            <AppImage
-              src={currentProduct.image_url || '/assets/images/no_image.png'}
-              alt={currentProduct.name}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
-          </div>
-        </div>
-
-        {/* Sliding Content */}
-        <div className="absolute inset-0 flex flex-col justify-end z-10 p-4">
-          <div
-            key={`text-${currentIndex}`}
-            className="animate-fade-in"
-          >
-            <span className="text-orange-400 text-xs font-bold uppercase tracking-widest block mb-2">
-              {currentProduct.category}
-            </span>
-            <h2 className="text-2xl font-serif font-bold text-white mb-2 line-clamp-2">
-              {currentProduct.name}
-            </h2>
-            <div className="flex items-center justify-between mb-4">
-              <span className="text-3xl font-bold text-orange-400">₹{currentProduct.price}</span>
-              <span className="text-white/80 text-sm">{currentProduct.stock} in stock</span>
-            </div>
-            <Link
-              href={`/product-details?id=${currentProduct.id}`}
-              className="block w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2 rounded-lg font-semibold transition-colors text-sm"
+      <section className="md:hidden relative min-h-screen flex flex-col items-center justify-start overflow-hidden bg-black pt-24">
+        {/* Carousel Section */}
+        <div className="relative h-96 w-full flex items-center justify-center">
+          {/* Sliding Background */}
+          <div className="absolute inset-0 w-full h-full">
+            <div
+              key={currentIndex}
+              className="absolute inset-0 animate-fade-in"
             >
-              View Product
-            </Link>
+              <AppImage
+                src={currentProduct.image_url || '/assets/images/no_image.png'}
+                alt={currentProduct.name}
+                className="w-full h-full object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+            </div>
+          </div>
+
+          {/* Sliding Content */}
+          <div className="absolute inset-0 flex flex-col justify-end z-10 p-4">
+            <div
+              key={`text-${currentIndex}`}
+              className="animate-fade-in"
+            >
+              <span className="text-orange-400 text-xs font-bold uppercase tracking-widest block mb-2">
+                {currentProduct.category}
+              </span>
+              <h2 className="text-2xl font-serif font-bold text-white mb-2 line-clamp-2">
+                {currentProduct.name}
+              </h2>
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-3xl font-bold text-orange-400">₹{currentProduct.price}</span>
+                <span className="text-white/80 text-sm">{currentProduct.stock} in stock</span>
+              </div>
+              <Link
+                href={`/product-details?id=${currentProduct.id}`}
+                className="block w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2 rounded-lg font-semibold transition-colors text-sm"
+              >
+                View Product
+              </Link>
+            </div>
+          </div>
+
+          {/* Navigation Arrows */}
+          <button
+            onClick={prevSlide}
+            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full transition-all backdrop-blur-sm"
+            aria-label="Previous"
+          >
+            <Icon name="ChevronLeftIcon" size={20} />
+          </button>
+
+          <button
+            onClick={nextSlide}
+            className="absolute right-3 top-1/2 -translate-y-1/2 z-20 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full transition-all backdrop-blur-sm"
+            aria-label="Next"
+          >
+            <Icon name="ChevronRightIcon" size={20} />
+          </button>
+
+          {/* Dots Navigation */}
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
+            {products.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                className={`transition-all rounded-full ${
+                  index === currentIndex
+                    ? 'bg-orange-500 w-6 h-2'
+                    : 'bg-white/40 hover:bg-white/60 w-2 h-2'
+                }`}
+                aria-label={`Go to slide ${index + 1}`}
+              />
+            ))}
           </div>
         </div>
 
-        {/* Navigation Arrows */}
-        <button
-          onClick={prevSlide}
-          className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full transition-all backdrop-blur-sm"
-          aria-label="Previous"
-        >
-          <Icon name="ChevronLeftIcon" size={20} />
-        </button>
+        {/* Featured & Products Grid Below Carousel */}
+        <div className="w-full bg-gradient-to-b from-black to-white/50 px-4 py-8">
+          {/* Featured Products Title */}
+          <h3 className="text-2xl font-serif font-bold text-white mb-6 text-center">
+            Featured Products
+          </h3>
 
-        <button
-          onClick={nextSlide}
-          className="absolute right-3 top-1/2 -translate-y-1/2 z-20 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full transition-all backdrop-blur-sm"
-          aria-label="Next"
-        >
-          <Icon name="ChevronRightIcon" size={20} />
-        </button>
+          {/* Products Grid - 2 columns on mobile */}
+          <div className="grid grid-cols-2 gap-4 mb-8">
+            {products.slice(0, 4).map((product) => (
+              <Link
+                key={product.id}
+                href={`/product-details?id=${product.id}`}
+                className="bg-white rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-shadow"
+              >
+                <div className="relative w-full h-40 bg-gray-100">
+                  <AppImage
+                    src={product.image_url || '/assets/images/no_image.png'}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
+                <div className="p-3">
+                  <h4 className="text-xs font-semibold text-gray-900 line-clamp-2 mb-1">
+                    {product.name}
+                  </h4>
+                  <div className="flex items-center justify-between">
+                    <span className="text-sm font-bold text-orange-500">₹{product.price}</span>
+                    <span className="text-xs text-gray-600">{product.stock} left</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
 
-        {/* Dots Navigation */}
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 flex gap-1.5">
-          {products.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => goToSlide(index)}
-              className={`transition-all rounded-full ${
-                index === currentIndex
-                  ? 'bg-orange-500 w-6 h-2'
-                  : 'bg-white/40 hover:bg-white/60 w-2 h-2'
-              }`}
-              aria-label={`Go to slide ${index + 1}`}
-            />
-          ))}
+          {/* View All Button */}
+          <Link
+            href="/categories"
+            className="block w-full bg-primary hover:bg-primary/90 text-white text-center py-3 rounded-lg font-semibold transition-colors"
+          >
+            View All Products
+          </Link>
         </div>
       </section>
 
