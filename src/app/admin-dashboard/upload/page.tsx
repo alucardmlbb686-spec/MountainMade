@@ -22,6 +22,7 @@ export default function AdminUploadPage() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
+  const [categoriesError, setCategoriesError] = useState('');
   const supabase = createClient();
 
   const [formData, setFormData] = useState({
@@ -39,29 +40,45 @@ export default function AdminUploadPage() {
   }, [user, userProfile, loading, router]);
 
   useEffect(() => {
+    let isMounted = true;
+
     const fetchCategories = async () => {
       try {
+        setCategoriesError('');
         const { data, error } = await supabase
           .from('categories')
           .select('id, name')
           .eq('is_active', true)
           .order('display_order', { ascending: true });
 
-        if (error) throw error;
-        setCategories(data || []);
-        
-        // Set first category as default
+        if (error) {
+          throw error;
+        }
+
+        if (!isMounted) return;
+
         if (data && data.length > 0) {
+          setCategories(data);
           setFormData(prev => ({ ...prev, category: data[0].name }));
+        } else {
+          setCategoriesError('No categories available');
         }
       } catch (error) {
-        console.error('Error fetching categories:', error);
+        if (isMounted) {
+          console.error('Error fetching categories:', error);
+          setCategoriesError('Failed to load categories');
+        }
       } finally {
-        setLoadingCategories(false);
+        if (isMounted) {
+          setLoadingCategories(false);
+        }
       }
     };
 
     fetchCategories();
+    return () => {
+      isMounted = false;
+    };
   }, [supabase]);
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -298,7 +315,7 @@ export default function AdminUploadPage() {
             {/* Category */}
             <div>
               <label htmlFor="category" className="block text-sm font-semibold text-foreground mb-2">
-                Category *
+                Category * {loadingCategories && <span className="text-xs text-muted-foreground">(Loading...)</span>}
               </label>
               <select
                 id="category"
@@ -309,13 +326,16 @@ export default function AdminUploadPage() {
                 className="input-base"
                 disabled={loadingCategories}
               >
-                <option value="">Select a category</option>
+                <option value="">{loadingCategories ? 'Loading categories...' : categories.length === 0 ? 'No categories available' : 'Select a category'}</option>
                 {categories.map((cat) => (
                   <option key={cat.id} value={cat.name}>
                     {cat.name}
                   </option>
                 ))}
               </select>
+              {categoriesError && (
+                <p className="text-xs text-error mt-1">{categoriesError}</p>
+              )}
             </div>
 
             {/* Error Message */}

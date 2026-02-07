@@ -186,15 +186,15 @@ export default function Header() {
 
                 {/* Search Suggestions Dropdown */}
                 {showSuggestions && suggestions.length > 0 && (
-                  <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto z-50">
+                  <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl max-h-80 overflow-y-auto z-50">
                     {suggestions.map((product) => (
                       <button
                         key={product.id}
                         type="button"
                         onClick={() => handleSuggestionClick(product.name)}
-                        className="w-full text-left px-4 py-2.5 hover:bg-gray-100 border-b border-gray-100 last:border-b-0 transition-colors text-sm"
+                        className="w-full text-left px-4 py-3 hover:bg-orange-50 border-b border-gray-100 last:border-b-0 transition-colors text-sm text-foreground font-medium"
                       >
-                        <span className="text-foreground font-medium">{product.name}</span>
+                        {product.name}
                       </button>
                     ))}
                   </div>
@@ -257,8 +257,8 @@ export default function Header() {
           </div>
 
           {/* Second Row: Search Bar (Mobile Only) */}
-          <form onSubmit={handleSearch} className="md:hidden w-full">
-            <div className="relative">
+          <form onSubmit={handleSearch} className="md:hidden w-full relative z-40">
+            <div className="relative w-full">
               <input
                 type="text"
                 placeholder="Search products..."
@@ -285,15 +285,15 @@ export default function Header() {
 
               {/* Search Suggestions Dropdown */}
               {showSuggestions && suggestions.length > 0 && (
-                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto z-50">
+                <div className="absolute top-full left-0 right-0 mt-2 bg-white border border-gray-200 rounded-lg shadow-xl max-h-80 overflow-y-auto z-50">
                   {suggestions.map((product) => (
                     <button
                       key={product.id}
                       type="button"
                       onClick={() => handleSuggestionClick(product.name)}
-                      className="w-full text-left px-4 py-3 hover:bg-gray-100 border-b border-gray-100 last:border-b-0 transition-colors"
+                      className="w-full text-left px-4 py-3 hover:bg-orange-50 border-b border-gray-100 last:border-b-0 transition-colors text-sm text-foreground font-medium"
                     >
-                      <span className="text-sm text-foreground font-medium">{product.name}</span>
+                      {product.name}
                     </button>
                   ))}
                 </div>
