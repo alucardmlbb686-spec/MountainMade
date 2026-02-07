@@ -103,7 +103,7 @@ export default function HeroSection() {
   return (
     <>
       {/* MOBILE VIEW - PRODUCT CAROUSEL */}
-      <section className="md:hidden relative min-h-screen flex flex-col items-center justify-start overflow-hidden bg-black pt-24">
+      <section className="md:hidden relative min-h-screen flex flex-col items-center justify-start overflow-hidden bg-white pt-24">
         {/* Carousel Section */}
         <div className="relative h-96 w-full flex items-center justify-center">
           {/* Sliding Background */}
@@ -181,7 +181,7 @@ export default function HeroSection() {
         </div>
 
         {/* Featured & Products Grid Below Carousel */}
-        <div className="w-full bg-gradient-to-b from-black via-black to-white px-4 py-8">
+        <div className="w-full bg-white px-4 py-8">
           {/* Featured Products Title */}
           <div className="mb-6">
             <h3 className="text-xl sm:text-2xl font-serif font-bold text-center py-4 px-3 bg-gradient-to-r from-orange-400 to-orange-500 text-white rounded-lg shadow-lg">
