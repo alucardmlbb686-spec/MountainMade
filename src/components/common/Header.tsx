@@ -7,15 +7,25 @@ import Icon from '@/components/ui/AppIcon';
 import AppImage from '@/components/ui/AppImage';
 import { useAuth } from '@/contexts/AuthContext';
 import { useCart } from '@/contexts/CartContext';
+import { useSupabaseClient } from '@/hooks/useSupabaseClient';
+
+interface ProductSuggestion {
+  id: string;
+  name: string;
+}
 
 export default function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [suggestions, setSuggestions] = useState<ProductSuggestion[]>([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const { user } = useAuth();
   const { itemCount } = useCart();
+  const supabase = useSupabaseClient();
+  const { authReady } = useAuth();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -25,6 +35,53 @@ export default function Header() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Fetch suggestions from database
+  useEffect(() => {
+    if (!searchQuery.trim() || !authReady) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    let isMounted = true;
+
+    const fetchSuggestions = async () => {
+      try {
+        const { data, error } = await supabase
+          .from('products')
+          .select('id, name')
+          .eq('is_active', true)
+          .gt('stock', 0)
+          .ilike('name', `%${searchQuery}%`)
+          .limit(8);
+
+        if (error) {
+          const isAbortError = 
+            error?.message?.includes('AbortError') ||
+            error?.details?.includes('AbortError');
+          
+          if (isAbortError) return;
+          throw error;
+        }
+
+        if (!isMounted) return;
+        setSuggestions(data || []);
+        setShowSuggestions(true);
+      } catch (error) {
+        if (isMounted) {
+          console.error('Error fetching suggestions:', error);
+        }
+      }
+    };
+
+    const timer = setTimeout(fetchSuggestions, 300);
+
+    return () => {
+      clearTimeout(timer);
+      isMounted = false;
+    };
+  }, [searchQuery, authReady, supabase]);
 
   const navLinks = [
     { id: 'nav_home', label: 'Home', href: '/homepage' },
@@ -39,7 +96,17 @@ export default function Header() {
     if (searchQuery.trim()) {
       router.push(`/categories?search=${encodeURIComponent(searchQuery)}`);
       setSearchQuery('');
+      setSuggestions([]);
+      setShowSuggestions(false);
     }
+  };
+
+  const handleSuggestionClick = (productName: string) => {
+    setSearchQuery(productName);
+    router.push(`/categories?search=${encodeURIComponent(productName)}`);
+    setSearchQuery('');
+    setSuggestions([]);
+    setShowSuggestions(false);
   };
 
   return (
@@ -152,18 +219,39 @@ export default function Header() {
                 placeholder="Search products..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                onFocus={() => searchQuery && setShowSuggestions(true)}
                 className="w-full px-4 py-2.5 pl-10 text-sm bg-gray-50 border-2 border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-all"
               />
               <Icon name="MagnifyingGlassIcon" size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-primary" />
               {searchQuery && (
                 <button
                   type="button"
-                  onClick={() => setSearchQuery('')}
+                  onClick={() => {
+                    setSearchQuery('');
+                    setSuggestions([]);
+                    setShowSuggestions(false);
+                  }}
                   className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600"
                   aria-label="Clear search"
                 >
                   <Icon name="XMarkIcon" size={18} />
                 </button>
+              )}
+
+              {/* Search Suggestions Dropdown */}
+              {showSuggestions && suggestions.length > 0 && (
+                <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg max-h-64 overflow-y-auto z-50">
+                  {suggestions.map((product) => (
+                    <button
+                      key={product.id}
+                      type="button"
+                      onClick={() => handleSuggestionClick(product.name)}
+                      className="w-full text-left px-4 py-3 hover:bg-gray-100 border-b border-gray-100 last:border-b-0 transition-colors"
+                    >
+                      <span className="text-sm text-foreground font-medium">{product.name}</span>
+                    </button>
+                  ))}
+                </div>
               )}
             </div>
           </form>
