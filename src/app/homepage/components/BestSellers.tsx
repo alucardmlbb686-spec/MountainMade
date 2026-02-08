@@ -148,11 +148,11 @@ export default function BestSellers() {
                 </div>
               </div>
             </Link>
-            )) : (
+            )) : loading ? (
               <div className="col-span-full text-center py-12">
                 <p className="text-muted-foreground">Loading best sellers...</p>
               </div>
-            )}
+            ) : null}
         </div>
 
         {/* Mobile Carousel */}
@@ -199,11 +199,11 @@ export default function BestSellers() {
                   </div>
                 </div>
               </Link>
-            )) : (
+            )) : loading ? (
               <div className="text-center py-12 w-full">
                 <p className="text-muted-foreground">Loading...</p>
               </div>
-            )}
+            ) : null}
           </div>
         </div>
       </div>
