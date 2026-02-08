@@ -71,7 +71,7 @@ export default function FeaturedProducts() {
     return () => {
       isMounted = false;
     };
-  }, [supabase]);
+  }, []);
 
   // Filter products based on search and category
   const filteredProducts = useMemo(() => {

@@ -70,7 +70,7 @@ export default function BestSellers() {
     return () => {
       isMounted = false;
     };
-  }, [supabase]);
+  }, []);
 
   // Only render section if we have products
   // Don't return null during loading - that unmounts the component

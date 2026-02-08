@@ -75,7 +75,7 @@ export default function FilterSidebar({ onFilterChange, isMobileOpen, onMobileCl
     return () => {
       isMounted = false;
     };
-  }, [supabase]);
+  }, []);
 
   useEffect(() => {
     if (!isHydrated) return;

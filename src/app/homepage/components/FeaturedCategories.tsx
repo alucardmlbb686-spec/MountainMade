@@ -89,7 +89,7 @@ export default function FeaturedCategories() {
     return () => {
       isMounted = false;
     };
-  }, [supabase]);
+  }, []);
 
   // Don't return null while loading - let component stay mounted for data
   // But do check if we have valid data to render
