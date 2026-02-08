@@ -120,15 +120,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setUserProfile(null);
         }
       }
-      
-      router.refresh();
     });
 
     return () => {
       isMounted = false;
       subscription?.unsubscribe();
     };
-  }, [router]);
+  }, []);
 
   const signIn = async (email: string, password: string) => {
     try {
