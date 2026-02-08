@@ -45,23 +45,25 @@ export default function BestSellers() {
     const fetchBestSellers = async () => {
       console.log('🔍 BestSellers: Starting fetch...');
       
-      // Set a 10 second timeout
+      // Set a 30 second timeout (increased from 10)
       timeoutId = setTimeout(() => {
         if (isMounted) {
-          console.error('🔍 Fetch timeout - took too long!');
+          console.error('🔍 Fetch timeout - took too long! (30s exceeded)');
           abortController.abort(); // Cancel the request
           setLoading(false);
         }
-      }, 10000);
+      }, 30000);
 
       try {
+        // Try simplified query first - just get active products without is_best_seller filter
+        console.log('🔍 Trying simplified query (no is_best_seller filter)...');
         const { data, error } = await supabase
           .from('products')
           .select('id, name, price, image_url, category, stock')
           .eq('is_active', true)
-          .eq('is_best_seller', true)
           .gt('stock', 0)
           .order('created_at', { ascending: false })
+          .limit(8)
           .abortSignal(abortController.signal);
 
         clearTimeout(timeoutId);
