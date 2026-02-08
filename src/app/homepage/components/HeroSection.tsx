@@ -75,80 +75,74 @@ export default function HeroSection() {
   }, [products.length]);
 
   const goToSlide = (index: number) => {
-    setCurrentIndex(index % products.length);
+    setCurrentIndex(index % (products.length || 1));
   };
 
   const nextSlide = () => {
-    setCurrentIndex((prev) => (prev + 1) % products.length);
+    setCurrentIndex((prev) => (prev + 1) % (products.length || 1));
   };
 
   const prevSlide = () => {
-    setCurrentIndex((prev) => (prev - 1 + products.length) % products.length);
+    setCurrentIndex((prev) => (prev - 1 + (products.length || 1)) % (products.length || 1));
   };
 
-  // Don't return null while loading - let component stay mounted for data
-  if (products.length === 0 && !loading) {
-    return null;
-  }
-
+  // Always render the section - conditionally show hero image or loading state
   const currentProduct = products && products.length > 0 ? products[currentIndex] : null;
-
-  // Don't render if no products
-  if (!currentProduct) {
-    return null;
-  }
+  const hasProducts = products.length > 0;
 
   return (
     <>
       {/* MOBILE VIEW - PRODUCT CAROUSEL */}
       <section className="md:hidden relative min-h-screen flex flex-col items-center justify-start overflow-x-hidden overflow-y-auto bg-white pt-24 w-full">
-        {/* Carousel Section */}
-        <div className="relative h-96 w-full flex items-center justify-center overflow-hidden">
-          {/* Sliding Background */}
-          <div className="absolute inset-0 w-full h-full">
-            <div
-              key={currentIndex}
-              className="absolute inset-0 animate-fade-in"
-            >
-              <AppImage
-                src={currentProduct.image_url || '/assets/images/no_image.png'}
-                alt={currentProduct.name}
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
-            </div>
-          </div>
-
-          {/* Sliding Content */}
-          <div className="absolute inset-0 flex flex-col justify-end z-10 p-4">
-            <div
-              key={`text-${currentIndex}`}
-              className="animate-fade-in"
-            >
-              <span className="text-orange-400 text-xs font-bold uppercase tracking-widest block mb-2">
-                {currentProduct.category}
-              </span>
-              <h2 className="text-2xl font-serif font-bold text-white mb-2 line-clamp-2">
-                {currentProduct.name}
-              </h2>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-3xl font-bold text-orange-400">₹{currentProduct.price}</span>
-                <span className="text-white/80 text-sm">{currentProduct.stock} in stock</span>
+        {hasProducts ? (
+          <>
+            {/* Carousel Section */}
+            <div className="relative h-96 w-full flex items-center justify-center overflow-hidden">
+              {/* Sliding Background */}
+              <div className="absolute inset-0 w-full h-full">
+                <div
+                  key={currentIndex}
+                  className="absolute inset-0 animate-fade-in"
+                >
+                  <AppImage
+                    src={currentProduct?.image_url || '/assets/images/no_image.png'}
+                    alt={currentProduct?.name || 'Product'}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/50 to-transparent"></div>
+                </div>
               </div>
-              <Link
-                href={`/product-details?id=${currentProduct.id}`}
-                className="block w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2 rounded-lg font-semibold transition-colors text-sm"
-              >
-                View Product
-              </Link>
-            </div>
-          </div>
 
-          {/* Navigation Arrows */}
-          <button
-            onClick={prevSlide}
-            className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full transition-all backdrop-blur-sm"
-            aria-label="Previous"
+              {/* Sliding Content */}
+              <div className="absolute inset-0 flex flex-col justify-end z-10 p-4">
+                <div
+                  key={`text-${currentIndex}`}
+                  className="animate-fade-in"
+                >
+                  <span className="text-orange-400 text-xs font-bold uppercase tracking-widest block mb-2">
+                    {currentProduct?.category}
+                  </span>
+                  <h2 className="text-2xl font-serif font-bold text-white mb-2 line-clamp-2">
+                    {currentProduct?.name}
+                  </h2>
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-3xl font-bold text-orange-400">₹{currentProduct?.price}</span>
+                    <span className="text-white/80 text-sm">{currentProduct?.stock} in stock</span>
+                  </div>
+                  <Link
+                    href={`/product-details?id=${currentProduct?.id}`}
+                    className="block w-full bg-orange-500 hover:bg-orange-600 text-white text-center py-2 rounded-lg font-semibold transition-colors text-sm"
+                  >
+                    View Product
+                  </Link>
+                </div>
+              </div>
+
+              {/* Navigation Arrows */}
+              <button
+                onClick={prevSlide}
+                className="absolute left-3 top-1/2 -translate-y-1/2 z-20 bg-white/30 hover:bg-white/50 text-white p-2 rounded-full transition-all backdrop-blur-sm"
+                aria-label="Previous"
           >
             <Icon name="ChevronLeftIcon" size={20} />
           </button>
@@ -223,6 +217,12 @@ export default function HeroSection() {
             View All Products
           </Link>
         </div>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center min-h-96">
+            <p className="text-muted-foreground text-lg">Loading featured products...</p>
+          </div>
+        )}
       </section>
 
       {/* DESKTOP VIEW - STATIC HERO */}

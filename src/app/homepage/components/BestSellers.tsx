@@ -72,11 +72,9 @@ export default function BestSellers() {
     };
   }, []);
 
-  // Only render section if we have products
-  // Don't return null during loading - that unmounts the component
-  if (products.length === 0 && !loading) {
-    return null;
-  }
+  // Always render the section - only hide if truly no data after loading
+  // During loading, render empty grids to maintain page layout
+  const hasProducts = products.length > 0;
 
   return (
     <section className="py-12 md:py-24 bg-white">
@@ -97,7 +95,7 @@ export default function BestSellers() {
 
         {/* Desktop Grid */}
         <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product: Product, index: number) => (
+          {hasProducts ? products.map((product: Product, index: number) => (
             <Link
               key={product.id}
               href={`/product-details?id=${product.id}`}
@@ -150,13 +148,17 @@ export default function BestSellers() {
                 </div>
               </div>
             </Link>
-          ))}
+            )) : (
+              <div className="col-span-full text-center py-12">
+                <p className="text-muted-foreground">Loading best sellers...</p>
+              </div>
+            )}
         </div>
 
         {/* Mobile Carousel */}
         <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4">
           <div className="flex gap-4 min-w-min">
-            {products.map((product: Product, index: number) => (
+            {hasProducts ? products.map((product: Product, index: number) => (
               <Link
                 key={product.id}
                 href={`/product-details?id=${product.id}`}
@@ -197,7 +199,11 @@ export default function BestSellers() {
                   </div>
                 </div>
               </Link>
-            ))}
+            )) : (
+              <div className="text-center py-12 w-full">
+                <p className="text-muted-foreground">Loading...</p>
+              </div>
+            )}
           </div>
         </div>
       </div>

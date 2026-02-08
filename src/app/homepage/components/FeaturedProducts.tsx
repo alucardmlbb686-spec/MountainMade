@@ -88,10 +88,8 @@ export default function FeaturedProducts() {
     return Array.from(new Set(products.map(p => p.category)));
   }, [products]);
 
-  // Only render if we have products (but don't unmount while loading)
-  if (products.length === 0 && !loading) {
-    return null;
-  }
+  // Always render the section - only hide if truly no data after loading
+  const hasProducts = products.length > 0;
 
   return (
     <section className="bg-gray-50 md:bg-white md:py-24 py-8">

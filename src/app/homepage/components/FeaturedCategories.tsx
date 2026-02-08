@@ -91,16 +91,8 @@ export default function FeaturedCategories() {
     };
   }, []);
 
-  // Don't return null while loading - let component stay mounted for data
-  // But do check if we have valid data to render
-  if (categories.length === 0 && !loading) {
-    return null;
-  }
-
-  // If still loading or categories are being processed, show minimal UI
-  if (categories.length === 0 && loading) {
-    return null;
-  }
+  // Always render the section - only hide if truly no data after loading
+  const hasCategories = categories.length > 0;
 
   return (
     <section className="py-24 bg-gradient-to-b from-slate-50 to-white">
@@ -126,7 +118,7 @@ export default function FeaturedCategories() {
 
         {/* Responsive Grid: 3 columns on mobile, 4 on desktop */}
         <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-          {categories && categories.length > 0 ? categories.map((category, index) => (
+          {hasCategories ? categories.map((category, index) => (
             <Link
               key={category.slug}
               href={`/categories?category=${category.slug}`}
@@ -159,7 +151,11 @@ export default function FeaturedCategories() {
                 </div>
               </div>
             </Link>
-          )) : null}
+          )) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground">Loading categories...</p>
+            </div>
+          )}
         </div>
 
         {/* CTA */}
