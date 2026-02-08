@@ -29,6 +29,7 @@ export default function BestSellers() {
     let isMounted = true;
 
     const fetchBestSellers = async () => {
+      console.log('BestSellers: Starting fetch...');
       try {
         const { data, error } = await supabase
           .from('products')
@@ -37,6 +38,8 @@ export default function BestSellers() {
           .eq('is_best_seller', true)
           .gt('stock', 0)
           .order('created_at', { ascending: false });
+
+        console.log('BestSellers: Fetch completed', { data, error });
 
         if (error) {
           const isAbortError = 
@@ -51,8 +54,12 @@ export default function BestSellers() {
           throw error;
         }
         
-        if (!isMounted) return;
+        if (!isMounted) {
+          console.log('Component unmounted, skipping state update');
+          return;
+        }
 
+        console.log('BestSellers: Setting products', data?.length || 0);
         setProducts(data || []);
       } catch (error) {
         if (isMounted) {
@@ -60,6 +67,7 @@ export default function BestSellers() {
         }
       } finally {
         if (isMounted) {
+          console.log('BestSellers: Setting loading to false');
           setLoading(false);
         }
       }
