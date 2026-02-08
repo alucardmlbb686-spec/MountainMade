@@ -16,20 +16,14 @@ interface Product {
 }
 
 export default function BestSellers() {
-  const [isHydrated, setIsHydrated] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient();
 
   useEffect(() => {
-    setIsHydrated(true);
-  }, []);
-
-  useEffect(() => {
     let isMounted = true;
 
     const fetchBestSellers = async () => {
-      console.log('BestSellers: Starting fetch...');
       try {
         const { data, error } = await supabase
           .from('products')
@@ -39,27 +33,20 @@ export default function BestSellers() {
           .gt('stock', 0)
           .order('created_at', { ascending: false });
 
-        console.log('BestSellers: Fetch completed', { data, error });
-
         if (error) {
           const isAbortError = 
             error?.message?.includes('AbortError') ||
             error?.details?.includes('AbortError');
           
           if (isAbortError) {
-            console.debug('Fetch aborted (expected during cleanup)');
             return;
           }
           
           throw error;
         }
         
-        if (!isMounted) {
-          console.log('Component unmounted, skipping state update');
-          return;
-        }
+        if (!isMounted) return;
 
-        console.log('BestSellers: Setting products', data?.length || 0);
         setProducts(data || []);
       } catch (error) {
         if (isMounted) {
@@ -67,7 +54,6 @@ export default function BestSellers() {
         }
       } finally {
         if (isMounted) {
-          console.log('BestSellers: Setting loading to false');
           setLoading(false);
         }
       }
@@ -79,10 +65,6 @@ export default function BestSellers() {
       isMounted = false;
     };
   }, []);
-
-  // Always render the section - only hide if truly no data after loading
-  // During loading, render empty grids to maintain page layout
-  const hasProducts = products.length > 0;
 
   return (
     <section className="py-12 md:py-24 bg-white">
@@ -103,13 +85,11 @@ export default function BestSellers() {
 
         {/* Desktop Grid */}
         <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {hasProducts ? products.map((product: Product, index: number) => (
+          {products.length > 0 ? products.map((product: Product, index: number) => (
             <Link
               key={product.id}
               href={`/product-details?id=${product.id}`}
-              className={`group bg-card border border-border rounded-xl overflow-hidden hover-lift shadow-md transition-all duration-300 ${
-                isHydrated ? 'animate-fade-in-up' : 'opacity-0'
-              }`}
+              className="group bg-card border border-border rounded-xl overflow-hidden hover-lift shadow-md transition-all duration-300 animate-fade-in-up"
               style={{ animationDelay: `${0.1 + index * 0.05}s` }}
             >
               {/* Badge */}
@@ -166,13 +146,11 @@ export default function BestSellers() {
         {/* Mobile Carousel */}
         <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4">
           <div className="flex gap-4 min-w-min">
-            {hasProducts ? products.map((product: Product, index: number) => (
+            {products.length > 0 ? products.map((product: Product, index: number) => (
               <Link
                 key={product.id}
                 href={`/product-details?id=${product.id}`}
-                className={`group flex-shrink-0 w-48 bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 ${
-                  isHydrated ? 'animate-fade-in-up' : 'opacity-0'
-                }`}
+                className="group flex-shrink-0 w-48 bg-card border border-border rounded-xl overflow-hidden hover:shadow-lg transition-all duration-300 animate-fade-in-up"
                 style={{ animationDelay: `${0.1 + index * 0.05}s` }}
               >
                 {/* Product Image */}
