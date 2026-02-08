@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
@@ -112,10 +112,10 @@ export default function AdminOrdersPage() {
     return statusMap[status] || status.charAt(0).toUpperCase() + status.slice(1);
   };
 
-  if (loading || !user || userProfile?.role !== 'admin') {
+  if (!user || userProfile?.role !== 'admin') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Icon name="ArrowPathIcon" size={48} className="text-primary animate-spin" />
+        <p className="text-muted-foreground">Redirecting...</p>
       </div>
     );
   }

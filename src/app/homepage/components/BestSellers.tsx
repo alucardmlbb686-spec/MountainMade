@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppImage from '@/components/ui/AppImage';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
@@ -74,15 +74,7 @@ export default function BestSellers() {
   }, [authReady, supabase]);
 
   if (loading) {
-    return (
-      <section className="py-12 md:py-24 bg-white">
-        <div className="w-full">
-          <div className="flex items-center justify-center py-20">
-            <Icon name="ArrowPathIcon" size={48} className="text-primary animate-spin" />
-          </div>
-        </div>
-      </section>
-    );
+    return null;
   }
 
   if (products.length === 0) {
@@ -108,7 +100,7 @@ export default function BestSellers() {
 
         {/* Desktop Grid */}
         <div className="hidden md:grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {products.map((product, index) => (
+          {products.map((product: Product, index: number) => (
             <Link
               key={product.id}
               href={`/product-details?id=${product.id}`}
@@ -167,7 +159,7 @@ export default function BestSellers() {
         {/* Mobile Carousel */}
         <div className="md:hidden overflow-x-auto pb-4 -mx-4 px-4">
           <div className="flex gap-4 min-w-min">
-            {products.map((product, index) => (
+            {products.map((product: Product, index: number) => (
               <Link
                 key={product.id}
                 href={`/product-details?id=${product.id}`}

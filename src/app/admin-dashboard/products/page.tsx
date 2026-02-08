@@ -1,7 +1,7 @@
 "use client";
 
 import React from 'react';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { createClient } from '@/lib/supabase/client';
@@ -161,10 +161,10 @@ export default function AdminProductsPage() {
         p.description.toLowerCase().includes(searchTerm.toLowerCase()))
   );
 
-  if (loading || !user || userProfile?.role !== 'admin') {
+  if (!user || userProfile?.role !== 'admin') {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Icon name="ArrowPathIcon" size={48} className="text-primary animate-spin" />
+        <p className="text-muted-foreground">Redirecting...</p>
       </div>
     );
   }

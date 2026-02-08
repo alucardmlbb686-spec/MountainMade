@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { useCart } from '@/contexts/CartContext';
 import Header from '@/components/common/Header';
 import Footer from '@/components/common/Footer';
@@ -26,10 +27,8 @@ export default function CartPage() {
       <>
         <Header />
         <main className="pt-24 pb-16 bg-background min-h-screen">
-          <div className="container mx-auto">
-            <div className="flex items-center justify-center py-20">
-              <Icon name="ArrowPathIcon" size={48} className="text-primary animate-spin" />
-            </div>
+          <div className="container mx-auto text-center py-20">
+            <p className="text-muted-foreground">Loading cart...</p>
           </div>
         </main>
         <Footer />

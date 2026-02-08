@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import AppImage from '@/components/ui/AppImage';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
@@ -93,15 +93,7 @@ export default function FeaturedProducts() {
   }, [products]);
 
   if (loading) {
-    return (
-      <section className="py-12 md:py-24 bg-gray-50 md:bg-white">
-        <div className="w-full">
-          <div className="flex items-center justify-center py-20">
-            <Icon name="ArrowPathIcon" size={48} className="text-primary animate-spin" />
-          </div>
-        </div>
-      </section>
-    );
+    return null;
   }
 
   if (products.length === 0) {

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import AppImage from '@/components/ui/AppImage';
 import Icon from '@/components/ui/AppIcon';
 import Link from 'next/link';
@@ -90,12 +90,8 @@ export default function HeroSection() {
     setCurrentIndex((prev) => (prev - 1 + products.length) % products.length);
   };
 
-  if (loading || products.length === 0) {
-    return (
-      <section className="relative h-96 md:min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-100 to-gray-50">
-        <Icon name="ArrowPathIcon" size={48} className="text-primary animate-spin" />
-      </section>
-    );
+  if (products.length === 0) {
+    return null;
   }
 
   const currentProduct = products[currentIndex];

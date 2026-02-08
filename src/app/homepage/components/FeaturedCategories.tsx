@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import AppImage from '@/components/ui/AppImage';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
@@ -92,15 +92,7 @@ export default function FeaturedCategories() {
   }, [authReady, supabase]);
 
   if (loading) {
-    return (
-      <section className="py-24 bg-gradient-to-b from-slate-50 to-white">
-        <div className="container mx-auto">
-          <div className="flex items-center justify-center py-20">
-            <Icon name="ArrowPathIcon" size={48} className="text-primary animate-spin" />
-          </div>
-        </div>
-      </section>
-    );
+    return null;
   }
 
   if (categories.length === 0) {

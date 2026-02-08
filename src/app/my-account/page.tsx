@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/contexts/AuthContext';
@@ -121,13 +121,10 @@ export default function MyAccountPage() {
     });
   };
 
-  if (loading || !user) {
+  if (!user) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <Icon name="ArrowPathIcon" size={48} className="animate-spin text-primary mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading...</p>
-        </div>
+        <p className="text-muted-foreground">Redirecting...</p>
       </div>
     );
   }

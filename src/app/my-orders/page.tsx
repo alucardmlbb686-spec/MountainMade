@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { createClient } from '@/lib/supabase/client';
@@ -159,10 +159,10 @@ export default function MyOrdersPage() {
     }
   };
 
-  if (loading || !user) {
+  if (!user) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
-        <Icon name="ArrowPathIcon" size={48} className="text-primary animate-spin" />
+        <p className="text-muted-foreground">Redirecting...</p>
       </div>
     );
   }
