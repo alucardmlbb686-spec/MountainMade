@@ -26,11 +26,32 @@ export default function BestSellers() {
     shouldShowLoadingMessage: products.length === 0 && loading
   });
 
+  // Log grid state when products change
+  useEffect(() => {
+    if (products.length > 0) {
+      console.log('🔍 Grid should show: PRODUCTS (', products.length, 'items)');
+    } else if (loading) {
+      console.log('🔍 Grid should show: LOADING');
+    } else {
+      console.log('🔍 Grid should show: NOTHING');
+    }
+  }, [products.length, loading]);
+
   useEffect(() => {
     let isMounted = true;
+    let timeoutId: NodeJS.Timeout;
 
     const fetchBestSellers = async () => {
       console.log('🔍 BestSellers: Starting fetch...');
+      
+      // Set a 10 second timeout
+      timeoutId = setTimeout(() => {
+        if (isMounted) {
+          console.error('🔍 Fetch timeout - took too long!');
+          setLoading(false);
+        }
+      }, 10000);
+
       try {
         const { data, error } = await supabase
           .from('products')
@@ -39,6 +60,8 @@ export default function BestSellers() {
           .eq('is_best_seller', true)
           .gt('stock', 0)
           .order('created_at', { ascending: false });
+
+        clearTimeout(timeoutId);
 
         console.log('🔍 Fetch result:', { 
           dataLength: data?.length, 
@@ -69,10 +92,12 @@ export default function BestSellers() {
         setProducts(productsToSet);
         console.log('🔍 State set, products:', productsToSet.length);
       } catch (error) {
+        clearTimeout(timeoutId);
         if (isMounted) {
           console.error('🔍 Error fetching:', error);
         }
       } finally {
+        clearTimeout(timeoutId);
         if (isMounted) {
           console.log('🔍 Setting loading to false');
           setLoading(false);
@@ -83,9 +108,10 @@ export default function BestSellers() {
     fetchBestSellers();
 
     return () => {
+      clearTimeout(timeoutId);
       isMounted = false;
     };
-  }, [supabase]);
+  }, []);  // Empty dependency array - fetch only on mount
 
   return (
     <section className="py-12 md:py-24 bg-white">
