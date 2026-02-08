@@ -40,6 +40,7 @@ export default function BestSellers() {
   useEffect(() => {
     let isMounted = true;
     let timeoutId: NodeJS.Timeout;
+    const abortController = new AbortController();
 
     const fetchBestSellers = async () => {
       console.log('🔍 BestSellers: Starting fetch...');
@@ -48,6 +49,7 @@ export default function BestSellers() {
       timeoutId = setTimeout(() => {
         if (isMounted) {
           console.error('🔍 Fetch timeout - took too long!');
+          abortController.abort(); // Cancel the request
           setLoading(false);
         }
       }, 10000);
@@ -59,7 +61,8 @@ export default function BestSellers() {
           .eq('is_active', true)
           .eq('is_best_seller', true)
           .gt('stock', 0)
-          .order('created_at', { ascending: false });
+          .order('created_at', { ascending: false })
+          .abortSignal(abortController.signal);
 
         clearTimeout(timeoutId);
 
@@ -72,10 +75,11 @@ export default function BestSellers() {
         if (error) {
           const isAbortError = 
             error?.message?.includes('AbortError') ||
+            error?.message?.includes('signal is aborted') ||
             error?.details?.includes('AbortError');
           
           if (isAbortError) {
-            console.log('🔍 Aborted (expected)');
+            console.log('🔍 Request was aborted (expected when refreshing)');
             return;
           }
           
@@ -109,6 +113,7 @@ export default function BestSellers() {
 
     return () => {
       clearTimeout(timeoutId);
+      abortController.abort(); // Cancel any pending request
       isMounted = false;
     };
   }, []);  // Empty dependency array - fetch only on mount
