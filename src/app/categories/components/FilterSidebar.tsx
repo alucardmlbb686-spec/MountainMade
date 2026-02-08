@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import Icon from '@/components/ui/AppIcon';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface Category {
   id: string;
@@ -26,12 +25,12 @@ export default function FilterSidebar({ onFilterChange, isMobileOpen, onMobileCl
   const [categories, setCategories] = useState<Category[]>([]);
   const [loadingCategories, setLoadingCategories] = useState(true);
   const supabase = useSupabaseClient();
-  const { authReady } = useAuth();
 
   useEffect(() => {
     setIsHydrated(true);
-    if (!authReady) return; // Wait for auth to be ready
-    
+  }, []);
+
+  useEffect(() => {
     let isMounted = true;
 
     const fetchCategories = async () => {
@@ -76,7 +75,7 @@ export default function FilterSidebar({ onFilterChange, isMobileOpen, onMobileCl
     return () => {
       isMounted = false;
     };
-  }, [authReady]);
+  }, [supabase]);
 
   useEffect(() => {
     if (!isHydrated) return;

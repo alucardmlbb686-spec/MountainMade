@@ -5,7 +5,6 @@ import AppImage from '@/components/ui/AppImage';
 import Icon from '@/components/ui/AppIcon';
 import Link from 'next/link';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface Product {
   id: string;
@@ -22,15 +21,12 @@ export default function HeroSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient();
-  const { authReady } = useAuth();
 
   useEffect(() => {
     setIsHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (!authReady) return;
-    
     let isMounted = true;
 
     const fetchProducts = async () => {
@@ -65,7 +61,7 @@ export default function HeroSection() {
 
     fetchProducts();
     return () => { isMounted = false; };
-  }, [authReady]);
+  }, [supabase]);
 
   // Auto-rotate carousel every 5 seconds (mobile only)
   useEffect(() => {

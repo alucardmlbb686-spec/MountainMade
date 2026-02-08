@@ -28,31 +28,54 @@ export default function ProductGrid({ filters, searchTerm }: ProductGridProps) {
   const [isHydrated, setIsHydrated] = useState(false);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const supabase = createClient();
   const { addToCart } = useCart();
   const router = useRouter();
 
   useEffect(() => {
     setIsHydrated(true);
-    fetchProducts();
   }, []);
 
-  const fetchProducts = async () => {
-    try {
-      const { data, error } = await supabase
-        .from('products')
-        .select('*')
-        .eq('is_active', true)
-        .order('created_at', { ascending: false });
+  useEffect(() => {
+    let isMounted = true;
 
-      if (error) throw error;
-      setProducts(data || []);
-    } catch (error) {
-      console.error('Error fetching products:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchProducts = async () => {
+      try {
+        const supabase = createClient();
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .eq('is_active', true)
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          const isAbortError = 
+            error?.message?.includes('AbortError') ||
+            error?.details?.includes('AbortError');
+          
+          if (isAbortError) {
+            return;
+          }
+          throw error;
+        }
+        
+        if (isMounted) {
+          setProducts(data || []);
+          setLoading(false);
+        }
+      } catch (error) {
+        if (isMounted) {
+          console.error('Error fetching products:', error);
+          setLoading(false);
+        }
+      }
+    };
+
+    fetchProducts();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   // Filter products
   const filteredProducts = products.filter((product) => {
@@ -90,7 +113,8 @@ export default function ProductGrid({ filters, searchTerm }: ProductGridProps) {
         return Number(a.price) - Number(b.price);
       case 'price-high':
         return Number(b.price) - Number(a.price);
-      case 'new': case'popularity':
+      case 'new':
+      case 'popularity':
       default:
         return 0;
     }

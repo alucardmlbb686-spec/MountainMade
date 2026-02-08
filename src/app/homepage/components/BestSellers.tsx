@@ -5,7 +5,6 @@ import AppImage from '@/components/ui/AppImage';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface Product {
   id: string;
@@ -21,15 +20,12 @@ export default function BestSellers() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient();
-  const { authReady } = useAuth();
 
   useEffect(() => {
     setIsHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (!authReady) return;
-    
     let isMounted = true;
 
     const fetchBestSellers = async () => {
@@ -71,7 +67,7 @@ export default function BestSellers() {
     return () => {
       isMounted = false;
     };
-  }, [authReady]);
+  }, [supabase]);
 
   // Only render if we have products
   if (products.length === 0) {

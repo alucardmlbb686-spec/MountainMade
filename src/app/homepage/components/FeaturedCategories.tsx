@@ -5,7 +5,6 @@ import AppImage from '@/components/ui/AppImage';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface Category {
   name: string;
@@ -19,11 +18,12 @@ export default function FeaturedCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient();
-  const { authReady } = useAuth();
 
   useEffect(() => {
-    if (!authReady) return; // Wait for auth to be ready
-    
+    setIsHydrated(true);
+  }, []);
+
+  useEffect(() => {
     let isMounted = true;
 
     const fetchCategories = async () => {

@@ -5,7 +5,6 @@ import AppImage from '@/components/ui/AppImage';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
-import { useAuth } from '@/contexts/AuthContext';
 
 interface Product {
   id: string;
@@ -23,15 +22,12 @@ export default function FeaturedProducts() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const supabase = useSupabaseClient();
-  const { authReady } = useAuth();
 
   useEffect(() => {
     setIsHydrated(true);
   }, []);
 
   useEffect(() => {
-    if (!authReady) return; // Wait for auth to be ready
-    
     let isMounted = true;
 
     const fetchFeaturedProducts = async () => {
@@ -75,7 +71,7 @@ export default function FeaturedProducts() {
     return () => {
       isMounted = false;
     };
-  }, [authReady]);
+  }, [supabase]);
 
   // Filter products based on search and category
   const filteredProducts = useMemo(() => {
