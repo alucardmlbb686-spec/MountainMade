@@ -89,7 +89,7 @@ export default function FeaturedCategories() {
     return () => {
       isMounted = false;
     };
-  }, [authReady]);
+  }, [supabase]);
 
   if (loading) {
     return null;
