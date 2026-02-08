@@ -20,10 +20,17 @@ export default function BestSellers() {
   const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient();
 
+  console.log('🔍 BestSellers RENDER:', { 
+    productsCount: products.length, 
+    loading,
+    shouldShowLoadingMessage: products.length === 0 && loading
+  });
+
   useEffect(() => {
     let isMounted = true;
 
     const fetchBestSellers = async () => {
+      console.log('🔍 BestSellers: Starting fetch...');
       try {
         const { data, error } = await supabase
           .from('products')
@@ -33,27 +40,41 @@ export default function BestSellers() {
           .gt('stock', 0)
           .order('created_at', { ascending: false });
 
+        console.log('🔍 Fetch result:', { 
+          dataLength: data?.length, 
+          error: error?.message,
+          hasError: !!error
+        });
+
         if (error) {
           const isAbortError = 
             error?.message?.includes('AbortError') ||
             error?.details?.includes('AbortError');
           
           if (isAbortError) {
+            console.log('🔍 Aborted (expected)');
             return;
           }
           
           throw error;
         }
         
-        if (!isMounted) return;
+        if (!isMounted) {
+          console.log('🔍 Unmounted, skipping');
+          return;
+        }
 
-        setProducts(data || []);
+        const productsToSet = data || [];
+        console.log('🔍 Setting products:', productsToSet.length);
+        setProducts(productsToSet);
+        console.log('🔍 State set, products:', productsToSet.length);
       } catch (error) {
         if (isMounted) {
-          console.error('Error fetching best sellers:', error);
+          console.error('🔍 Error fetching:', error);
         }
       } finally {
         if (isMounted) {
+          console.log('🔍 Setting loading to false');
           setLoading(false);
         }
       }
@@ -64,7 +85,7 @@ export default function BestSellers() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [supabase]);
 
   return (
     <section className="py-12 md:py-24 bg-white">
