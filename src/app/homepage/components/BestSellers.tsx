@@ -57,12 +57,12 @@ export default function BestSellers() {
         if (!isMounted) return;
 
         setProducts(data || []);
+        setLoading(false);
       } catch (error) {
         if (isMounted) {
           console.error('Error fetching best sellers:', error);
+          setLoading(false);
         }
-      } finally {
-        if (isMounted) setLoading(false);
       }
     };
 
@@ -71,12 +71,9 @@ export default function BestSellers() {
     return () => {
       isMounted = false;
     };
-  }, [authReady, supabase]);
+  }, [authReady]);
 
-  if (loading) {
-    return null;
-  }
-
+  // Only render if we have products
   if (products.length === 0) {
     return null;
   }

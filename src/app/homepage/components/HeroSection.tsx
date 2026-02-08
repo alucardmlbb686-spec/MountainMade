@@ -65,7 +65,7 @@ export default function HeroSection() {
 
     fetchProducts();
     return () => { isMounted = false; };
-  }, [authReady, supabase]);
+  }, [authReady]);
 
   // Auto-rotate carousel every 5 seconds (mobile only)
   useEffect(() => {

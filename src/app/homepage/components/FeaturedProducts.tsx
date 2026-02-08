@@ -75,7 +75,7 @@ export default function FeaturedProducts() {
     return () => {
       isMounted = false;
     };
-  }, [authReady, supabase]);
+  }, [authReady]);
 
   // Filter products based on search and category
   const filteredProducts = useMemo(() => {
@@ -92,10 +92,7 @@ export default function FeaturedProducts() {
     return Array.from(new Set(products.map(p => p.category)));
   }, [products]);
 
-  if (loading) {
-    return null;
-  }
-
+  // Only render if we have products
   if (products.length === 0) {
     return null;
   }
