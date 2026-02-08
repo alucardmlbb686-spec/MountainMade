@@ -91,11 +91,14 @@ export default function FeaturedCategories() {
     };
   }, [supabase]);
 
-  if (loading) {
+  // Don't return null while loading - let component stay mounted for data
+  // But do check if we have valid data to render
+  if (categories.length === 0 && !loading) {
     return null;
   }
 
-  if (categories.length === 0) {
+  // If still loading or categories are being processed, show minimal UI
+  if (categories.length === 0 && loading) {
     return null;
   }
 
@@ -123,7 +126,7 @@ export default function FeaturedCategories() {
 
         {/* Responsive Grid: 3 columns on mobile, 4 on desktop */}
         <div className="grid grid-cols-3 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
-          {categories.map((category, index) => (
+          {categories && categories.length > 0 ? categories.map((category, index) => (
             <Link
               key={category.slug}
               href={`/categories?category=${category.slug}`}
@@ -156,7 +159,7 @@ export default function FeaturedCategories() {
                 </div>
               </div>
             </Link>
-          ))}
+          )) : null}
         </div>
 
         {/* CTA */}

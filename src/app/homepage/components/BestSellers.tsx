@@ -69,8 +69,9 @@ export default function BestSellers() {
     };
   }, [supabase]);
 
-  // Only render if we have products
-  if (products.length === 0) {
+  // Only render section if we have products
+  // Don't return null during loading - that unmounts the component
+  if (products.length === 0 && !loading) {
     return null;
   }
 

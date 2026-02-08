@@ -86,11 +86,17 @@ export default function HeroSection() {
     setCurrentIndex((prev) => (prev - 1 + products.length) % products.length);
   };
 
-  if (products.length === 0) {
+  // Don't return null while loading - let component stay mounted for data
+  if (products.length === 0 && !loading) {
     return null;
   }
 
-  const currentProduct = products[currentIndex];
+  const currentProduct = products && products.length > 0 ? products[currentIndex] : null;
+
+  // Don't render if no products
+  if (!currentProduct) {
+    return null;
+  }
 
   return (
     <>

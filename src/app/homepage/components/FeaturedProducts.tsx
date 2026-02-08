@@ -88,8 +88,8 @@ export default function FeaturedProducts() {
     return Array.from(new Set(products.map(p => p.category)));
   }, [products]);
 
-  // Only render if we have products
-  if (products.length === 0) {
+  // Only render if we have products (but don't unmount while loading)
+  if (products.length === 0 && !loading) {
     return null;
   }
 
@@ -118,7 +118,7 @@ export default function FeaturedProducts() {
 
         {/* Products Grid - Desktop */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-          {filteredProducts.slice(0, 8).map((product, index) => (
+          {filteredProducts && filteredProducts.length > 0 ? filteredProducts.slice(0, 8).map((product, index) => (
             <Link
               key={product.id}
               href={`/product-details?id=${product.id}`}
@@ -163,7 +163,7 @@ export default function FeaturedProducts() {
                 </div>
               </div>
             </Link>
-          ))}
+          )) : null}
         </div>
 
         {/* CTA */}
