@@ -53,6 +53,7 @@ export default function ProductGrid({ filters, searchTerm }: ProductGridProps) {
             error?.details?.includes('AbortError');
           
           if (isAbortError) {
+            console.debug('Fetch aborted (expected during cleanup)');
             return;
           }
           throw error;
@@ -60,11 +61,13 @@ export default function ProductGrid({ filters, searchTerm }: ProductGridProps) {
         
         if (isMounted) {
           setProducts(data || []);
-          setLoading(false);
         }
       } catch (error) {
         if (isMounted) {
           console.error('Error fetching products:', error);
+        }
+      } finally {
+        if (isMounted) {
           setLoading(false);
         }
       }

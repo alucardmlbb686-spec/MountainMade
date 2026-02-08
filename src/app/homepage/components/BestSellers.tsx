@@ -44,6 +44,7 @@ export default function BestSellers() {
             error?.details?.includes('AbortError');
           
           if (isAbortError) {
+            console.debug('Fetch aborted (expected during cleanup)');
             return;
           }
           
@@ -53,10 +54,12 @@ export default function BestSellers() {
         if (!isMounted) return;
 
         setProducts(data || []);
-        setLoading(false);
       } catch (error) {
         if (isMounted) {
           console.error('Error fetching best sellers:', error);
+        }
+      } finally {
+        if (isMounted) {
           setLoading(false);
         }
       }
