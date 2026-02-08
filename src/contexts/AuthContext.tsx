@@ -74,13 +74,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } catch (error) {
         if (isMounted) {
           // Suppress AbortError and allow UI to load
-          let errorMsg = '';
-          if (typeof error === 'object' && error !== null && 'message' in error) {
-            errorMsg = (error as any).message;
-          } else {
-            errorMsg = String(error);
-          }
-          if (!errorMsg.includes('AbortError')) {
+          const errorName = (error as any)?.name || '';
+          const errorMsg = String((error as any)?.message || '');
+          
+          // Check for AbortError by name and message
+          const isAbortError = errorName.includes('AbortError') || errorMsg.includes('AbortError');
+          
+          if (!isAbortError) {
             console.error('Auth initialization failed:', error);
           }
           setAuthReady(true); // Set to true anyway to prevent UI blocks

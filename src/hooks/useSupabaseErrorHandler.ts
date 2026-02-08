@@ -13,13 +13,16 @@ export function useSupabaseErrorHandler() {
   useEffect(() => {
     const handleUnhandledRejection = (event: PromiseRejectionEvent) => {
       const error = event.reason;
-      const message = error?.message || error?.toString() || '';
+      const message = String(error?.message || error?.toString() || '');
+      const errorName = error?.name || '';
       
       // Suppress Supabase AbortErrors - these are expected and not real failures
       if (
+        errorName.includes('AbortError') ||
         message.includes('AbortError') ||
         message.includes('signal is aborted') ||
-        message.includes('Request was aborted')
+        message.includes('Request was aborted') ||
+        message.includes('cancelled')
       ) {
         // Prevent the error from being logged to console
         event.preventDefault();
@@ -34,3 +37,4 @@ export function useSupabaseErrorHandler() {
     };
   }, []);
 }
+
