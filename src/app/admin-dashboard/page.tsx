@@ -130,6 +130,13 @@ export default function AdminDashboardPage() {
       color: 'text-green-500',
     },
     {
+      title: 'Manage Categories',
+      description: 'Add, edit, or manage product categories',
+      icon: 'FolderIcon',
+      link: '/admin-dashboard/categories',
+      color: 'text-sky-500',
+    },
+    {
       title: 'Upload Food Items',
       description: 'Add new food products with images',
       icon: 'CloudArrowUpIcon',
