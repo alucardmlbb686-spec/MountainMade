@@ -20,92 +20,33 @@ export default function BestSellers() {
   const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient();
 
-  console.log('🔍 BestSellers RENDER:', { 
-    productsCount: products.length, 
-    loading,
-    shouldShowLoadingMessage: products.length === 0 && loading
-  });
-
-  // Log grid state when products change
-  useEffect(() => {
-    if (products.length > 0) {
-      console.log('🔍 Grid should show: PRODUCTS (', products.length, 'items)');
-    } else if (loading) {
-      console.log('🔍 Grid should show: LOADING');
-    } else {
-      console.log('🔍 Grid should show: NOTHING');
-    }
-  }, [products.length, loading]);
-
   useEffect(() => {
     let isMounted = true;
-    let timeoutId: NodeJS.Timeout;
-    const abortController = new AbortController();
 
     const fetchBestSellers = async () => {
-      console.log('🔍 BestSellers: Starting fetch...');
-      
-      // Set a 30 second timeout (increased from 10)
-      timeoutId = setTimeout(() => {
-        if (isMounted) {
-          console.error('🔍 Fetch timeout - took too long! (30s exceeded)');
-          abortController.abort(); // Cancel the request
-          setLoading(false);
-        }
-      }, 30000);
-
       try {
-        // Try simplified query first - just get active products without is_best_seller filter
-        console.log('🔍 Trying simplified query (no is_best_seller filter)...');
         const { data, error } = await supabase
           .from('products')
           .select('id, name, price, image_url, category, stock')
           .eq('is_active', true)
           .gt('stock', 0)
           .order('created_at', { ascending: false })
-          .limit(8)
-          .abortSignal(abortController.signal);
-
-        clearTimeout(timeoutId);
-
-        console.log('🔍 Fetch result:', { 
-          dataLength: data?.length, 
-          error: error?.message,
-          hasError: !!error
-        });
+          .limit(8);
 
         if (error) {
-          const isAbortError = 
-            error?.message?.includes('AbortError') ||
-            error?.message?.includes('signal is aborted') ||
-            error?.details?.includes('AbortError');
-          
-          if (isAbortError) {
-            console.log('🔍 Request was aborted (expected when refreshing)');
-            return;
-          }
-          
-          throw error;
+          console.error('Error fetching best sellers:', error);
         }
         
-        if (!isMounted) {
-          console.log('🔍 Unmounted, skipping');
-          return;
-        }
-
-        const productsToSet = data || [];
-        console.log('🔍 Setting products:', productsToSet.length);
-        setProducts(productsToSet);
-        console.log('🔍 State set, products:', productsToSet.length);
-      } catch (error) {
-        clearTimeout(timeoutId);
         if (isMounted) {
-          console.error('🔍 Error fetching:', error);
+          setProducts(data || []);
+        }
+      } catch (error) {
+        console.error('Error in fetchBestSellers:', error);
+        if (isMounted) {
+          setProducts([]);
         }
       } finally {
-        clearTimeout(timeoutId);
         if (isMounted) {
-          console.log('🔍 Setting loading to false');
           setLoading(false);
         }
       }
@@ -114,11 +55,9 @@ export default function BestSellers() {
     fetchBestSellers();
 
     return () => {
-      clearTimeout(timeoutId);
-      abortController.abort(); // Cancel any pending request
       isMounted = false;
     };
-  }, []);  // Empty dependency array - fetch only on mount
+  }, []);
 
   return (
     <section className="py-12 md:py-24 bg-white">
