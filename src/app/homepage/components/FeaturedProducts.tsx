@@ -5,6 +5,7 @@ import AppImage from '@/components/ui/AppImage';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Product {
   id: string;
@@ -22,6 +23,7 @@ export default function FeaturedProducts() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const supabase = useSupabaseClient();
+  const { authReady } = useAuth();
 
   useEffect(() => {
     setIsHydrated(true);
@@ -44,12 +46,6 @@ export default function FeaturedProducts() {
 
         if (error) {
           console.error('❌ FeaturedProducts: Query error:', error.message);
-          console.error('Error details:', {
-            code: (error as any).code,
-            status: (error as any).status,
-            message: error.message
-          });
-          // Don't throw - just log and continue with empty state
           if (isMounted) {
             setProducts([]);
           }
@@ -61,8 +57,7 @@ export default function FeaturedProducts() {
         }
       } catch (error: any) {
         if (isMounted) {
-          console.error('❌ FeaturedProducts: Caught exception');
-          console.error('Exception:', error?.message || error);
+          console.error('❌ FeaturedProducts: Caught exception:', error?.message);
           setProducts([]);
         }
       } finally {
@@ -70,12 +65,15 @@ export default function FeaturedProducts() {
       }
     };
 
-    fetchFeaturedProducts();
+    // Don't fetch until auth is ready to avoid abort errors
+    if (authReady) {
+      fetchFeaturedProducts();
+    }
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [authReady, supabase]);
 
   // Filter products based on search and category
   const filteredProducts = useMemo(() => {

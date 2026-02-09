@@ -5,6 +5,7 @@ import AppImage from '@/components/ui/AppImage';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Product {
   id: string;
@@ -20,16 +21,21 @@ export default function BestSellers() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const supabase = useSupabaseClient();
+  const { authReady } = useAuth();
 
   useEffect(() => {
+    // Don't fetch until auth is ready to avoid abort errors
+    if (!authReady) {
+      return;
+    }
+
     let isMounted = true;
 
     const fetchBestSellers = async () => {
       try {
         console.log('🔍 BestSellers: Starting fetch...');
         
-        // Make a minimal query
-        const query = supabase
+        const { data, error: queryError } = await supabase
           .from('products')
           .select('id, name, price, image_url, category, stock')
           .eq('is_active', true)
@@ -37,21 +43,10 @@ export default function BestSellers() {
           .order('created_at', { ascending: false })
           .limit(8);
         
-        console.log('🔍 BestSellers: Query object created');
-        
-        const response = await query;
-        
         console.log('🔍 BestSellers: Got response');
-        
-        const { data, error: queryError } = response;
         
         if (queryError) {
           console.error('❌ BestSellers: Query error:', queryError.message);
-          console.error('Error details:', {
-            code: (queryError as any).code,
-            status: (queryError as any).status,
-            message: queryError.message
-          });
           if (isMounted) {
             setError(queryError.message);
             setProducts([]);
@@ -64,8 +59,7 @@ export default function BestSellers() {
           }
         }
       } catch (err: any) {
-        console.error('❌ BestSellers: Caught exception');
-        console.error('Exception:', err?.message || err);
+        console.error('❌ BestSellers: Caught exception:', err?.message);
         if (isMounted) {
           setError(err?.message || 'Unknown error');
           setProducts([]);
@@ -82,7 +76,7 @@ export default function BestSellers() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [authReady, supabase]);
 
   return (
     <section className="py-12 md:py-24 bg-white">
