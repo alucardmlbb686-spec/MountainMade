@@ -5,6 +5,7 @@ import AppImage from '@/components/ui/AppImage';
 import Link from 'next/link';
 import Icon from '@/components/ui/AppIcon';
 import { useSupabaseClient } from '@/hooks/useSupabaseClient';
+import { useAuth } from '@/contexts/AuthContext';
 
 interface Category {
   name: string;
@@ -18,6 +19,7 @@ export default function FeaturedCategories() {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const supabase = useSupabaseClient();
+  const { authReady } = useAuth();
 
   useEffect(() => {
     setIsHydrated(true);
@@ -28,6 +30,7 @@ export default function FeaturedCategories() {
 
     const fetchCategories = async () => {
       try {
+        console.log('🔍 FeaturedCategories: Starting fetch...');
         const { data, error } = await supabase
           .from('products')
           .select('category, image_url')
@@ -40,14 +43,17 @@ export default function FeaturedCategories() {
             error?.details?.includes('AbortError');
           
           if (isAbortError) {
-            // Silently ignore abort errors - expected during auth init
+            console.debug('Fetch aborted (expected during cleanup)');
             return;
           }
           
+          console.error('❌ FeaturedCategories: Query error:', error.message);
           throw error;
         }
 
         if (!isMounted) return;
+        
+        console.log('✅ FeaturedCategories: Success, got', data?.length || 0, 'products');
 
         // Group products by category and count them
         const categoryMap = new Map<string, { count: number; image: string | null }>();
@@ -72,9 +78,10 @@ export default function FeaturedCategories() {
         if (isMounted) {
           setCategories(categoriesArray);
         }
-      } catch (error) {
+      } catch (error: any) {
         if (isMounted) {
-          console.error('Error fetching categories:', error);
+          console.error('❌ FeaturedCategories: Caught exception:', error?.message);
+          setCategories([]);
         }
       } finally {
         if (isMounted) {
@@ -83,13 +90,18 @@ export default function FeaturedCategories() {
       }
     };
 
-    setIsHydrated(true);
-    fetchCategories();
+    // Don't fetch until auth is ready to avoid abort errors
+    if (authReady) {
+      console.log('🔍 FeaturedCategories: Auth ready, starting fetch...');
+      fetchCategories();
+    } else {
+      console.log('⏳ FeaturedCategories: Waiting for auth...');
+    }
 
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [authReady, supabase]);
 
   // Always render the section - only hide if truly no data after loading
   const hasCategories = categories.length > 0;
