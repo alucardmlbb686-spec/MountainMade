@@ -26,14 +26,24 @@ export default function BestSellers() {
   useEffect(() => {
     // Don't fetch until auth is ready to avoid abort errors
     if (!authReady) {
+      console.log('⏳ BestSellers: Waiting for auth...');
       return;
     }
 
     let isMounted = true;
+    const abortController = new AbortController();
 
     const fetchBestSellers = async () => {
       try {
         console.log('🔍 BestSellers: Starting fetch...');
+        
+        // Add a timeout to prevent infinite hangs
+        const timeoutId = setTimeout(() => {
+          if (isMounted) {
+            console.warn('⏱️ BestSellers: Request timeout after 10s');
+            abortController.abort();
+          }
+        }, 10000);
         
         const { data, error: queryError } = await supabase
           .from('products')
@@ -43,38 +53,50 @@ export default function BestSellers() {
           .order('created_at', { ascending: false })
           .limit(8);
         
+        clearTimeout(timeoutId);
         console.log('🔍 BestSellers: Got response');
         
         if (queryError) {
+          const isAbortError = 
+            queryError?.message?.includes('AbortError') ||
+            queryError?.details?.includes('AbortError');
+          
+          if (isAbortError) {
+            console.debug('🛑 BestSellers: Fetch aborted');
+            return;
+          }
+          
           console.error('❌ BestSellers: Query error:', queryError.message);
           if (isMounted) {
             setError(queryError.message);
             setProducts([]);
+            setLoading(false);
           }
         } else {
           console.log('✅ BestSellers: Success, got', data?.length || 0, 'products');
           if (isMounted) {
             setProducts(data || []);
             setError(null);
+            setLoading(false);
           }
         }
       } catch (err: any) {
-        console.error('❌ BestSellers: Caught exception:', err?.message);
-        if (isMounted) {
+        if (isMounted && !abortController.signal.aborted) {
+          console.error('❌ BestSellers: Caught exception:', err?.message);
           setError(err?.message || 'Unknown error');
           setProducts([]);
-        }
-      } finally {
-        if (isMounted) {
           setLoading(false);
         }
       }
     };
 
+    console.log('🔍 BestSellers: Auth ready, starting fetch...');
     fetchBestSellers();
 
     return () => {
+      console.log('🛑 BestSellers: Cleaning up...');
       isMounted = false;
+      abortController.abort();
     };
   }, [authReady, supabase]);
 

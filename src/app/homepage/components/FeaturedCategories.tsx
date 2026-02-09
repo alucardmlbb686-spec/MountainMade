@@ -27,14 +27,26 @@ export default function FeaturedCategories() {
 
   useEffect(() => {
     let isMounted = true;
+    const abortController = new AbortController();
 
     const fetchCategories = async () => {
       try {
         console.log('🔍 FeaturedCategories: Starting fetch...');
+        
+        // Add a timeout to prevent infinite hangs
+        const timeoutId = setTimeout(() => {
+          if (isMounted) {
+            console.warn('⏱️ FeaturedCategories: Request timeout after 10s');
+            abortController.abort();
+          }
+        }, 10000);
+
         const { data, error } = await supabase
           .from('products')
           .select('category, image_url')
           .eq('is_active', true);
+
+        clearTimeout(timeoutId);
 
         // Check for AbortError in both message and details
         if (error) {
@@ -43,7 +55,7 @@ export default function FeaturedCategories() {
             error?.details?.includes('AbortError');
           
           if (isAbortError) {
-            console.debug('Fetch aborted (expected during cleanup)');
+            console.debug('🛑 FeaturedCategories: Fetch aborted');
             return;
           }
           
@@ -51,7 +63,10 @@ export default function FeaturedCategories() {
           throw error;
         }
 
-        if (!isMounted) return;
+        if (!isMounted) {
+          console.log('🛑 FeaturedCategories: Component unmounted, ignoring results');
+          return;
+        }
         
         console.log('✅ FeaturedCategories: Success, got', data?.length || 0, 'products');
 
@@ -59,11 +74,13 @@ export default function FeaturedCategories() {
         const categoryMap = new Map<string, { count: number; image: string | null }>();
         
         data?.forEach((product) => {
-          const existing = categoryMap.get(product.category);
-          if (existing) {
-            existing.count++;
-          } else {
-            categoryMap.set(product.category, { count: 1, image: product.image_url });
+          if (product.category) {
+            const existing = categoryMap.get(product.category);
+            if (existing) {
+              existing.count++;
+            } else {
+              categoryMap.set(product.category, { count: 1, image: product.image_url });
+            }
           }
         });
 
@@ -77,14 +94,12 @@ export default function FeaturedCategories() {
 
         if (isMounted) {
           setCategories(categoriesArray);
+          setLoading(false);
         }
       } catch (error: any) {
-        if (isMounted) {
+        if (isMounted && !abortController.signal.aborted) {
           console.error('❌ FeaturedCategories: Caught exception:', error?.message);
           setCategories([]);
-        }
-      } finally {
-        if (isMounted) {
           setLoading(false);
         }
       }
@@ -96,10 +111,13 @@ export default function FeaturedCategories() {
       fetchCategories();
     } else {
       console.log('⏳ FeaturedCategories: Waiting for auth...');
+      setLoading(true);
     }
 
     return () => {
+      console.log('🛑 FeaturedCategories: Cleaning up...');
       isMounted = false;
+      abortController.abort();
     };
   }, [authReady, supabase]);
 

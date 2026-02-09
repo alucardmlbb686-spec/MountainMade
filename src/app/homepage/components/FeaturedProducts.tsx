@@ -31,10 +31,19 @@ export default function FeaturedProducts() {
 
   useEffect(() => {
     let isMounted = true;
+    const abortController = new AbortController();
 
     const fetchFeaturedProducts = async () => {
       try {
         console.log('🔍 FeaturedProducts: Starting fetch...');
+        
+        // Add a timeout to prevent infinite hangs
+        const timeoutId = setTimeout(() => {
+          if (isMounted) {
+            console.warn('⏱️ FeaturedProducts: Request timeout after 10s');
+            abortController.abort();
+          }
+        }, 10000);
         
         const { data, error } = await supabase
           .from('products')
@@ -44,34 +53,52 @@ export default function FeaturedProducts() {
           .order('created_at', { ascending: false })
           .limit(12);
 
+        clearTimeout(timeoutId);
+
         if (error) {
+          const isAbortError = 
+            error?.message?.includes('AbortError') ||
+            error?.details?.includes('AbortError');
+          
+          if (isAbortError) {
+            console.debug('🛑 FeaturedProducts: Fetch aborted');
+            return;
+          }
+          
           console.error('❌ FeaturedProducts: Query error:', error.message);
           if (isMounted) {
             setProducts([]);
+            setLoading(false);
           }
         } else {
           console.log('✅ FeaturedProducts: Success, got', data?.length || 0, 'products');
           if (isMounted) {
             setProducts(data || []);
+            setLoading(false);
           }
         }
       } catch (error: any) {
-        if (isMounted) {
+        if (isMounted && !abortController.signal.aborted) {
           console.error('❌ FeaturedProducts: Caught exception:', error?.message);
           setProducts([]);
+          setLoading(false);
         }
-      } finally {
-        if (isMounted) setLoading(false);
       }
     };
 
     // Don't fetch until auth is ready to avoid abort errors
     if (authReady) {
+      console.log('🔍 FeaturedProducts: Auth ready, starting fetch...');
       fetchFeaturedProducts();
+    } else {
+      console.log('⏳ FeaturedProducts: Waiting for auth...');
+      setLoading(true);
     }
 
     return () => {
+      console.log('🛑 FeaturedProducts: Cleaning up...');
       isMounted = false;
+      abortController.abort();
     };
   }, [authReady, supabase]);
 
