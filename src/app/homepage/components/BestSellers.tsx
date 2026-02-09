@@ -25,6 +25,10 @@ export default function BestSellers() {
 
     const fetchBestSellers = async () => {
       try {
+        console.log('🔍 Starting fetch best sellers...');
+        console.log('Supabase instance:', !!supabase);
+        
+        // Simple query to test
         const { data, error } = await supabase
           .from('products')
           .select('id, name, price, image_url, category, stock')
@@ -33,18 +37,30 @@ export default function BestSellers() {
           .order('created_at', { ascending: false })
           .limit(8);
 
+        console.log('🔍 Fetch response received:', { 
+          hasData: !!data, 
+          dataLength: data?.length,
+          hasError: !!error,
+          errorMessage: error?.message 
+        });
+        
         if (error) {
-          console.error('Error fetching best sellers:', error);
+          console.error('❌ Supabase error fetching best sellers');
+          console.error('Message:', error.message);
+          console.error('Status:', (error as any).status);
+          console.error('Code:', (error as any).code);
+          // Don't throw - just log and show empty state
+        } else {
+          console.log('✅ Successfully fetched products:', data?.length || 0);
         }
         
         if (isMounted) {
           setProducts(data || []);
         }
-      } catch (error) {
-        console.error('Error in fetchBestSellers:', error);
-        if (isMounted) {
-          setProducts([]);
-        }
+      } catch (error: any) {
+        console.error('❌ Exception thrown in fetchBestSellers');
+        console.error('Message:', error?.message);
+        console.error('Name:', error?.name);
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -52,12 +68,18 @@ export default function BestSellers() {
       }
     };
 
-    fetchBestSellers();
+    // Wait a tick to ensure supabase is ready
+    const timeoutId = setTimeout(() => {
+      if (isMounted) {
+        fetchBestSellers();
+      }
+    }, 0);
 
     return () => {
+      clearTimeout(timeoutId);
       isMounted = false;
     };
-  }, []);
+  }, [supabase]);
 
   return (
     <section className="py-12 md:py-24 bg-white">

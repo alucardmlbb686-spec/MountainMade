@@ -57,9 +57,12 @@ export default function FeaturedProducts() {
         if (!isMounted) return;
 
         setProducts(data || []);
-      } catch (error) {
+      } catch (error: any) {
         if (isMounted) {
-          console.error('Error fetching featured products:', error);
+          console.error('❌ Exception in fetchFeaturedProducts:');
+          console.error('Error message:', error?.message);
+          console.error('Error name:', error?.name);
+          console.error('Full error:', error);
         }
       } finally {
         if (isMounted) setLoading(false);
