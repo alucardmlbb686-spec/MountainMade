@@ -18,6 +18,7 @@ interface Product {
 export default function BestSellers() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const supabase = useSupabaseClient();
 
   useEffect(() => {
@@ -25,42 +26,50 @@ export default function BestSellers() {
 
     const fetchBestSellers = async () => {
       try {
-        console.log('🔍 Starting fetch best sellers...');
-        console.log('Supabase instance:', !!supabase);
+        console.log('🔍 BestSellers: Starting fetch...');
         
-        // Simple query to test
-        const { data, error } = await supabase
+        // Make a minimal query
+        const query = supabase
           .from('products')
           .select('id, name, price, image_url, category, stock')
           .eq('is_active', true)
           .gt('stock', 0)
           .order('created_at', { ascending: false })
           .limit(8);
-
-        console.log('🔍 Fetch response received:', { 
-          hasData: !!data, 
-          dataLength: data?.length,
-          hasError: !!error,
-          errorMessage: error?.message 
-        });
         
-        if (error) {
-          console.error('❌ Supabase error fetching best sellers');
-          console.error('Message:', error.message);
-          console.error('Status:', (error as any).status);
-          console.error('Code:', (error as any).code);
-          // Don't throw - just log and show empty state
+        console.log('🔍 BestSellers: Query object created');
+        
+        const response = await query;
+        
+        console.log('🔍 BestSellers: Got response');
+        
+        const { data, error: queryError } = response;
+        
+        if (queryError) {
+          console.error('❌ BestSellers: Query error:', queryError.message);
+          console.error('Error details:', {
+            code: (queryError as any).code,
+            status: (queryError as any).status,
+            message: queryError.message
+          });
+          if (isMounted) {
+            setError(queryError.message);
+            setProducts([]);
+          }
         } else {
-          console.log('✅ Successfully fetched products:', data?.length || 0);
+          console.log('✅ BestSellers: Success, got', data?.length || 0, 'products');
+          if (isMounted) {
+            setProducts(data || []);
+            setError(null);
+          }
         }
-        
+      } catch (err: any) {
+        console.error('❌ BestSellers: Caught exception');
+        console.error('Exception:', err?.message || err);
         if (isMounted) {
-          setProducts(data || []);
+          setError(err?.message || 'Unknown error');
+          setProducts([]);
         }
-      } catch (error: any) {
-        console.error('❌ Exception thrown in fetchBestSellers');
-        console.error('Message:', error?.message);
-        console.error('Name:', error?.name);
       } finally {
         if (isMounted) {
           setLoading(false);
@@ -68,18 +77,12 @@ export default function BestSellers() {
       }
     };
 
-    // Wait a tick to ensure supabase is ready
-    const timeoutId = setTimeout(() => {
-      if (isMounted) {
-        fetchBestSellers();
-      }
-    }, 0);
+    fetchBestSellers();
 
     return () => {
-      clearTimeout(timeoutId);
       isMounted = false;
     };
-  }, [supabase]);
+  }, []);
 
   return (
     <section className="py-12 md:py-24 bg-white">

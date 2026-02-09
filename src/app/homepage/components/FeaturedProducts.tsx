@@ -32,6 +32,8 @@ export default function FeaturedProducts() {
 
     const fetchFeaturedProducts = async () => {
       try {
+        console.log('🔍 FeaturedProducts: Starting fetch...');
+        
         const { data, error } = await supabase
           .from('products')
           .select('id, name, price, image_url, category, stock')
@@ -40,29 +42,28 @@ export default function FeaturedProducts() {
           .order('created_at', { ascending: false })
           .limit(12);
 
-        // Check for AbortError in both message and details
         if (error) {
-          const isAbortError = 
-            error?.message?.includes('AbortError') ||
-            error?.details?.includes('AbortError');
-          
-          if (isAbortError) {
-            // Silently ignore abort errors - expected during auth init
-            return;
+          console.error('❌ FeaturedProducts: Query error:', error.message);
+          console.error('Error details:', {
+            code: (error as any).code,
+            status: (error as any).status,
+            message: error.message
+          });
+          // Don't throw - just log and continue with empty state
+          if (isMounted) {
+            setProducts([]);
           }
-          
-          throw error;
+        } else {
+          console.log('✅ FeaturedProducts: Success, got', data?.length || 0, 'products');
+          if (isMounted) {
+            setProducts(data || []);
+          }
         }
-        
-        if (!isMounted) return;
-
-        setProducts(data || []);
       } catch (error: any) {
         if (isMounted) {
-          console.error('❌ Exception in fetchFeaturedProducts:');
-          console.error('Error message:', error?.message);
-          console.error('Error name:', error?.name);
-          console.error('Full error:', error);
+          console.error('❌ FeaturedProducts: Caught exception');
+          console.error('Exception:', error?.message || error);
+          setProducts([]);
         }
       } finally {
         if (isMounted) setLoading(false);
