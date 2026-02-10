@@ -41,6 +41,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     let isMounted = true;
 
+    // Fallback timeout: if auth init takes too long, don't block the UI
+    const timeoutId = setTimeout(() => {
+      if (isMounted) {
+        console.warn('⚠️ AuthProvider: Timed out waiting for auth session — proceeding to avoid blocking UI');
+        setAuthReady(true);
+        setLoading(false);
+      }
+    }, 5000); // 5 seconds fallback
+
     const getUser = async () => {
       try {
         // Wait for auth session to be initialized
@@ -88,6 +97,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       } finally {
         if (isMounted) {
           setLoading(false);
+          clearTimeout(timeoutId);
         }
       }
     };
@@ -124,6 +134,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
     return () => {
       isMounted = false;
+      clearTimeout(timeoutId);
       subscription?.unsubscribe();
     };
   }, []);
