@@ -32,11 +32,15 @@ export default function FeaturedProducts() {
   useEffect(() => {
     let isMounted = true;
     const abortController = new AbortController();
+    let retryAttempted = false;
+
+    // Ensure we show a loading state while fetching
+    setLoading(true);
 
     const fetchFeaturedProducts = async () => {
       try {
-        console.log('🔍 FeaturedProducts: Starting fetch...');
-        
+        console.log('🔍 FeaturedProducts: Starting fetch (no auth wait)...');
+
         // Add a timeout to prevent infinite hangs
         const timeoutId = setTimeout(() => {
           if (isMounted) {
@@ -44,7 +48,7 @@ export default function FeaturedProducts() {
             abortController.abort();
           }
         }, 10000);
-        
+
         const { data, error } = await supabase
           .from('products')
           .select('id, name, price, image_url, category, stock')
@@ -55,24 +59,37 @@ export default function FeaturedProducts() {
 
         clearTimeout(timeoutId);
 
+        if (abortController.signal.aborted) {
+          console.debug('🛑 FeaturedProducts: Request was aborted (timeout)');
+          return;
+        }
+
         if (error) {
-          const isAbortError = 
+          const isAbortError =
             error?.message?.includes('AbortError') ||
             error?.details?.includes('AbortError');
-          
+
           if (isAbortError) {
             console.debug('🛑 FeaturedProducts: Fetch aborted');
             return;
           }
-          
+
           console.error('❌ FeaturedProducts: Query error:', error.message);
+
+          if (!retryAttempted && isMounted) {
+            retryAttempted = true;
+            console.log('🔁 FeaturedProducts: Retrying fetch in 1s...');
+            setTimeout(fetchFeaturedProducts, 1000);
+            return;
+          }
+
           if (isMounted) {
             setProducts([]);
             setLoading(false);
           }
         } else {
-          console.log('✅ FeaturedProducts: Success, got', data?.length || 0, 'products');
           if (isMounted) {
+            console.log('✅ FeaturedProducts: Success, got', data?.length || 0, 'products');
             setProducts(data || []);
             setLoading(false);
           }
@@ -80,19 +97,25 @@ export default function FeaturedProducts() {
       } catch (error: any) {
         if (isMounted && !abortController.signal.aborted) {
           console.error('❌ FeaturedProducts: Caught exception:', error?.message);
+          if (!retryAttempted) {
+            retryAttempted = true;
+            console.log('🔁 FeaturedProducts: Retrying after exception in 1s...');
+            setTimeout(fetchFeaturedProducts, 1000);
+            return;
+          }
           setProducts([]);
           setLoading(false);
         }
       }
     };
 
-    // Don't fetch until auth is ready to avoid abort errors
-    if (authReady) {
-      console.log('🔍 FeaturedProducts: Auth ready, starting fetch...');
-      fetchFeaturedProducts();
+    // Start initial fetch immediately (public reads should work using anon key)
+    fetchFeaturedProducts();
+
+    if (!authReady) {
+      console.log('⏳ FeaturedProducts: Auth not ready; we will re-fetch when auth becomes ready (effect will rerun)');
     } else {
-      console.log('⏳ FeaturedProducts: Waiting for auth...');
-      setLoading(true);
+      console.log('🔍 FeaturedProducts: Auth ready on mount.');
     }
 
     return () => {

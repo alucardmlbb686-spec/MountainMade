@@ -28,10 +28,12 @@ export default function FeaturedCategories() {
   useEffect(() => {
     let isMounted = true;
     const abortController = new AbortController();
+    let retryAttempted = false;
+    setLoading(true);
 
     const fetchCategories = async () => {
       try {
-        console.log('🔍 FeaturedCategories: Starting fetch...');
+        console.log('🔍 FeaturedCategories: Starting fetch (no auth wait)...');
         
         // Add a timeout to prevent infinite hangs
         const timeoutId = setTimeout(() => {
@@ -48,6 +50,11 @@ export default function FeaturedCategories() {
 
         clearTimeout(timeoutId);
 
+        if (abortController.signal.aborted) {
+          console.debug('🛑 FeaturedCategories: Request was aborted (timeout)');
+          return;
+        }
+
         // Check for AbortError in both message and details
         if (error) {
           const isAbortError = 
@@ -60,6 +67,15 @@ export default function FeaturedCategories() {
           }
           
           console.error('❌ FeaturedCategories: Query error:', error.message);
+
+          // Retry once on transient errors
+          if (!retryAttempted && isMounted) {
+            retryAttempted = true;
+            console.log('🔁 FeaturedCategories: Retrying fetch in 1s...');
+            setTimeout(fetchCategories, 1000);
+            return;
+          }
+
           throw error;
         }
 
@@ -105,13 +121,13 @@ export default function FeaturedCategories() {
       }
     };
 
-    // Don't fetch until auth is ready to avoid abort errors
-    if (authReady) {
-      console.log('🔍 FeaturedCategories: Auth ready, starting fetch...');
-      fetchCategories();
+    // Start fetch immediately to avoid blocking the UI; effect will re-run on authReady changes
+    fetchCategories();
+
+    if (!authReady) {
+      console.log('⏳ FeaturedCategories: Auth not ready; performed public fetch — will re-fetch when auth is ready');
     } else {
-      console.log('⏳ FeaturedCategories: Waiting for auth...');
-      setLoading(true);
+      console.log('🔍 FeaturedCategories: Auth ready on mount.');
     }
 
     return () => {

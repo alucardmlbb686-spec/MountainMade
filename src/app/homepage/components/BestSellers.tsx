@@ -24,18 +24,16 @@ export default function BestSellers() {
   const { authReady } = useAuth();
 
   useEffect(() => {
-    // Don't fetch until auth is ready to avoid abort errors
-    if (!authReady) {
-      console.log('⏳ BestSellers: Waiting for auth...');
-      return;
-    }
-
     let isMounted = true;
     const abortController = new AbortController();
+    let retryAttempted = false;
+
+    // Ensure we show a loading state while fetching
+    setLoading(true);
 
     const fetchBestSellers = async () => {
       try {
-        console.log('🔍 BestSellers: Starting fetch...');
+        console.log('🔍 BestSellers: Starting fetch (no auth wait)...');
         
         // Add a timeout to prevent infinite hangs
         const timeoutId = setTimeout(() => {
@@ -55,6 +53,11 @@ export default function BestSellers() {
         
         clearTimeout(timeoutId);
         console.log('🔍 BestSellers: Got response');
+
+        if (abortController.signal.aborted) {
+          console.debug('🛑 BestSellers: Request was aborted (timeout)');
+          return;
+        }
         
         if (queryError) {
           const isAbortError = 
@@ -67,6 +70,14 @@ export default function BestSellers() {
           }
           
           console.error('❌ BestSellers: Query error:', queryError.message);
+
+          if (!retryAttempted && isMounted) {
+            retryAttempted = true;
+            console.log('🔁 BestSellers: Retrying fetch in 1s...');
+            setTimeout(fetchBestSellers, 1000);
+            return;
+          }
+
           if (isMounted) {
             setError(queryError.message);
             setProducts([]);
@@ -83,6 +94,12 @@ export default function BestSellers() {
       } catch (err: any) {
         if (isMounted && !abortController.signal.aborted) {
           console.error('❌ BestSellers: Caught exception:', err?.message);
+          if (!retryAttempted) {
+            retryAttempted = true;
+            console.log('🔁 BestSellers: Retrying after exception in 1s...');
+            setTimeout(fetchBestSellers, 1000);
+            return;
+          }
           setError(err?.message || 'Unknown error');
           setProducts([]);
           setLoading(false);
@@ -90,8 +107,14 @@ export default function BestSellers() {
       }
     };
 
-    console.log('🔍 BestSellers: Auth ready, starting fetch...');
+    // Start initial fetch immediately (public reads should work using anon key)
     fetchBestSellers();
+
+    if (!authReady) {
+      console.log('⏳ BestSellers: Auth not ready; performed public fetch — will re-fetch when auth is ready');
+    } else {
+      console.log('🔍 BestSellers: Auth ready on mount.');
+    }
 
     return () => {
       console.log('🛑 BestSellers: Cleaning up...');
