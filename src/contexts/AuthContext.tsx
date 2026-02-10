@@ -160,11 +160,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
-    setUserProfile(null);
-    router.push('/homepage');
-    router.refresh();
+    // Make signOut resilient: don't let a blocked request hang the UI
+    let timeoutId: NodeJS.Timeout | null = null;
+    try {
+      const signOutPromise = supabase.auth.signOut();
+      const timeoutPromise = new Promise((_, reject) => {
+        timeoutId = setTimeout(() => reject(new Error('SignOutTimeout')), 5000);
+      });
+
+      await Promise.race([signOutPromise, timeoutPromise]);
+    } catch (err: any) {
+      if (err?.message === 'SignOutTimeout') {
+        console.warn('⚠️ signOut timed out — proceeding to clear local auth state to avoid blocking UI');
+      } else {
+        console.error('signOut error:', err);
+      }
+    } finally {
+      if (timeoutId) clearTimeout(timeoutId);
+      // Clear local auth state even if server sign-out failed to avoid blocking the UI
+      setUser(null);
+      setUserProfile(null);
+      router.push('/homepage');
+      router.refresh();
+    }
   };
 
   const isAdmin = () => {
